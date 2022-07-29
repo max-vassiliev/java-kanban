@@ -12,10 +12,12 @@ public class Epic extends Task {
         relatedSubtasks = new ArrayList<>();
     }
 
+    // добавить ID связанной подзадачи
     public void addRelatedSubtask(int subtaskId) {
         this.relatedSubtasks.add(subtaskId);
     }
 
+    // удалить ID подзадачи из списка связанных подзадач
     public void removeRelatedSubtask(int subtaskId) {
         for (Integer id : relatedSubtasks) {
             if (id == subtaskId) {
@@ -23,6 +25,6 @@ public class Epic extends Task {
             }
         }
     }
-    
+
 
 }
