@@ -25,5 +25,15 @@ public class Subtask extends Task {
         this.relatedEpicId = relatedEpicId;
     }
 
-
+    @Override
+    public String toString() {
+        return "entries.Subtask{" +
+                "relatedEpicTitle='" + relatedEpicTitle + '\'' +
+                ", relatedEpicId=" + relatedEpicId +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

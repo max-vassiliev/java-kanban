@@ -34,4 +34,15 @@ public class Epic extends Task {
         this.relatedSubtasks = relatedSubtasks;
     }
 
+    @Override
+    public String toString() {
+        return "entries.Epic{" +
+                "relatedSubtasks=" + relatedSubtasks +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
 }

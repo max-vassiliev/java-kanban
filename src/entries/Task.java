@@ -45,6 +45,14 @@ public class Task {
         this.status = status;
     }
 
-
+    @Override
+    public String toString() {
+        return "entries.Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                "}";
+    }
 
 }
