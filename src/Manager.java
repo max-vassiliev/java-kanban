@@ -55,6 +55,23 @@ public class Manager {
         checkEpicStatus(relatedEpic);
     }
 
+    // ПОЛУЧИТЬ
+
+    // получить задачу
+    public Task getTask(int taskId) {
+        return tasks.get(taskId);
+    }
+
+    // получить эпик
+    public Epic getEpic(int epicId) {
+        return epics.get(epicId);
+    }
+
+    // получить подзадачу
+    public Subtask getSubtask (int subtaskId) {
+        return subtasks.get(subtaskId);
+    }
+    
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
