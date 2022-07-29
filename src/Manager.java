@@ -36,4 +36,20 @@ public class Manager {
         checkEpicStatus(relatedEpic);
     }
 
+    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+
+    // связать подзадачу с эпиком
+    private void setEpicSubtaskRelation(Subtask subtask) {
+        for (Integer epicId : epics.keySet()) {
+            Epic epic = epics.get(epicId);
+            if (epic.getTitle().equals(subtask.getRelatedEpicTitle())) {
+                subtask.setRelatedEpicId(epicId);
+                if (!epic.getRelatedSubtasks().contains(subtask.getId())) {
+                    epic.addRelatedSubtask(subtask.getId());
+                }
+            }
+        }
+    }
+
+    
 }
