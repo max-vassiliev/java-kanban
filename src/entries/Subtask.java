@@ -9,5 +9,21 @@ public class Subtask extends Task {
         this.relatedEpicTitle = relatedEpicTitle;
     }
 
-    
+    public String getRelatedEpicTitle() {
+        return relatedEpicTitle;
+    }
+
+    public void setRelatedEpicTitle(String relatedEpicTitle) {
+        this.relatedEpicTitle = relatedEpicTitle;
+    }
+
+    public int getRelatedEpicId() {
+        return relatedEpicId;
+    }
+
+    public void setRelatedEpicId(int relatedEpicId) {
+        this.relatedEpicId = relatedEpicId;
+    }
+
+
 }

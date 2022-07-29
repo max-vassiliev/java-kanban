@@ -26,5 +26,12 @@ public class Epic extends Task {
         }
     }
 
+    public ArrayList<Integer> getRelatedSubtasks() {
+        return relatedSubtasks;
+    }
+
+    public void setRelatedSubtasks(ArrayList<Integer> relatedSubtasks) {
+        this.relatedSubtasks = relatedSubtasks;
+    }
 
 }
