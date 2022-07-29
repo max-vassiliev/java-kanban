@@ -36,6 +36,26 @@ public class Manager {
         checkEpicStatus(relatedEpic);
     }
 
+    // ОБНОВИТЬ
+
+    // обновить задачу
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    // обновить эпик
+    public void updateEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    // обновить подзадачу
+    public void updateSubtask (Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+        Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
+        checkEpicStatus(relatedEpic);
+    }
+
+
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
     // проверить статус эпика
