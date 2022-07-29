@@ -11,7 +11,7 @@ public class Manager {
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    
+
     // ДОБАВИТЬ
 
     // добавить задачу
