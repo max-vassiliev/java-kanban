@@ -137,7 +137,21 @@ public class Manager {
         checkEpicStatus(relatedEpic);
         subtasks.remove(subtask.getId());
     }
-    
+
+    // удалить все задачи
+    public void deleteAllTasks(){
+        tasks.clear();
+    }
+
+    // удалить все эпики
+    public void deleteAllEpics() {
+        epics.clear();
+    }
+
+    // удалить все подзадачи
+    public void deleteAllSubtasks() {
+        subtasks.clear();
+    }
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
