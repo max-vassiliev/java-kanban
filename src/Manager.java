@@ -115,6 +115,29 @@ public class Manager {
         return subtasksList;
     }
 
+    // УДАЛИТЬ
+
+    // удалить задачу
+    public void deleteTask(Task task) {
+        tasks.remove(task.getId());
+    }
+
+    // удалить эпик
+    public void deleteEpic(Epic epic) {
+        for (Integer subtaskId : epic.getRelatedSubtasks()){
+            subtasks.remove(subtaskId);
+        }
+        epics.remove(epic.getId());
+    }
+
+    // удалить подзадачу
+    public void deleteSubtask(Subtask subtask) {
+        Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
+        relatedEpic.removeRelatedSubtask(subtask.getId());
+        checkEpicStatus(relatedEpic);
+        subtasks.remove(subtask.getId());
+    }
+    
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
