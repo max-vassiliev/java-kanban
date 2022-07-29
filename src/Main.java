@@ -66,6 +66,15 @@ public class Main {
         System.out.println(manager.getEpic(epic2Subtask1.getRelatedEpicId()));
         System.out.println();
 
+        // РАУНД 3
+
+        // Раунд 3: удаляем одну задачу и один эпик
+        manager.deleteTask(task1);
+        manager.deleteEpic(epic1);
+
+        // Раунд 3: смотрим, что осталось
+        printEntries(3, manager);
+
     }
 
     public static void printEntries(int roundNumber, Manager manager) {
