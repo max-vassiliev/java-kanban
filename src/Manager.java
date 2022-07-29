@@ -38,6 +38,34 @@ public class Manager {
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
+    // проверить статус эпика
+    private void checkEpicStatus(Epic epic) {
+        int done = 0;
+        int inProgress = 0;
+
+        if (epic.getRelatedSubtasks().isEmpty()) {
+            epic.setStatus("NEW");
+            return;
+        }
+
+        for (Integer subtaskId : epic.getRelatedSubtasks()) {
+            Subtask subtask = subtasks.get(subtaskId);
+            if (subtask.getStatus().equals("DONE")) {
+                done += 1;
+            } else if (subtask.getStatus().equals("IN_PROGRESS")) {
+                inProgress += 1;
+            }
+        }
+
+        if (done == epic.getRelatedSubtasks().size()) {
+            epic.setStatus("DONE");
+        } else if (inProgress > 0 || (done > 0 && done < epic.getRelatedSubtasks().size())) {
+            epic.setStatus("IN_PROGRESS");
+        } else {
+            epic.setStatus("NEW");
+        }
+    }
+
     // связать подзадачу с эпиком
     private void setEpicSubtaskRelation(Subtask subtask) {
         for (Integer epicId : epics.keySet()) {
@@ -51,5 +79,5 @@ public class Manager {
         }
     }
 
-    
+
 }
