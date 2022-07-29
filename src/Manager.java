@@ -2,6 +2,7 @@ import entries.Epic;
 import entries.Subtask;
 import entries.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
@@ -71,7 +72,38 @@ public class Manager {
     public Subtask getSubtask (int subtaskId) {
         return subtasks.get(subtaskId);
     }
-    
+
+    // получить список всех задач
+    public ArrayList<Task> getTasks() {
+        ArrayList<Task> tasksList= new ArrayList<>();
+        for (Integer id : tasks.keySet()) {
+            Task task = tasks.get(id);
+            tasksList.add(task);
+        }
+        return tasksList;
+    }
+
+    // получить список всех эпиков
+    public ArrayList<Epic> getEpics() {
+        ArrayList<Epic> epicsList = new ArrayList<>();
+        for (Integer id : epics.keySet()) {
+            Epic epic = epics.get(id);
+            epicsList.add(epic);
+        }
+        return epicsList;
+    }
+
+    // получить список всех подзадач
+    public ArrayList<Subtask> getSubtasks() {
+        ArrayList<Subtask> subtasksList = new ArrayList<>();
+        for (Integer id : subtasks.keySet()) {
+            Subtask subtask = subtasks.get(id);
+            subtasksList.add(subtask);
+        }
+        return subtasksList;
+    }
+
+
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
