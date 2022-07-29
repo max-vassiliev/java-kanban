@@ -36,4 +36,17 @@ public class Main {
 
     }
 
+    public static void printEntries(int roundNumber, Manager manager) {
+        System.out.println("-----------------------------");
+        System.out.println("РАУНД " + roundNumber);
+        System.out.println("-----------------------------");
+        System.out.println("Список задач:");
+        System.out.println(manager.getTasks());
+        System.out.println("-----------------------------");
+        System.out.println("Список эпиков:");
+        System.out.println(manager.getEpics());
+        System.out.println("-----------------------------");
+        System.out.println("Список подзадач:");
+        System.out.println(manager.getSubtasks());
+    }
 }
