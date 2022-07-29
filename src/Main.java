@@ -34,6 +34,38 @@ public class Main {
         printEntries(1, manager);
         System.out.println();
 
+        // РАУНД 2
+
+        // Раунд 2: меняем статусы некоторых объектов
+        task1 = Round2.updateTask1(task1); // DONE
+        epic1Subtask1 = Round2.updateEpic1Subtask1(epic1Subtask1); // IN_PROGRESS
+        epic2Subtask1 = Round2.updateEpic2Subtask1(epic2Subtask1); // DONE
+
+        // Раунд 2: добавляем обновления в программу
+        manager.updateTask(task1);
+        manager.updateSubtask(epic1Subtask1);
+        manager.updateSubtask(epic2Subtask1);
+
+        // Раунд 2: печатаем обновленные объекты и родственные эпики
+        System.out.println("-----------------------------");
+        System.out.println("РАУНД 2");
+        System.out.println("-----------------------------");
+        System.out.println("Задача '" + task1.getTitle() + "':");
+        System.out.println(manager.getTask(task1.getId()));
+        System.out.println();
+        System.out.println("Подзадача '" + epic1Subtask1.getTitle() + "':");
+        System.out.println(manager.getSubtask(epic1Subtask1.getId()));
+        Epic relatedEpic1 = manager.getEpic(epic1Subtask1.getRelatedEpicId());
+        System.out.println("Входит в эпик '" + relatedEpic1.getTitle() + "':");
+        System.out.println(manager.getEpic(epic1Subtask1.getRelatedEpicId()));
+        System.out.println();
+        System.out.println("Подзадача '" + epic2Subtask1.getTitle() + "':");
+        System.out.println(manager.getSubtask(epic2Subtask1.getId()));
+        Epic relatedEpic2 = manager.getEpic(epic2Subtask1.getRelatedEpicId());
+        System.out.println("Входит в эпик '" + relatedEpic2.getTitle() + "':");
+        System.out.println(manager.getEpic(epic2Subtask1.getRelatedEpicId()));
+        System.out.println();
+
     }
 
     public static void printEntries(int roundNumber, Manager manager) {
