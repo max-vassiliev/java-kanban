@@ -1,3 +1,5 @@
+package entries;
+
 public class Task {
     int id;
     String title;
