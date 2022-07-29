@@ -103,6 +103,17 @@ public class Manager {
         return subtasksList;
     }
 
+    // получить список всех подзадач одного эпика
+    public ArrayList<Subtask> getSubtasksInEpic(int epicId) {
+        ArrayList<Subtask> subtasksList = new ArrayList<>();
+        for (Integer subtaskId : subtasks.keySet()) {
+            Subtask subtask = subtasks.get(subtaskId);
+            if (subtask.getRelatedEpicId() == epicId) {
+                subtasksList.add(subtask);
+            }
+        }
+        return subtasksList;
+    }
 
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
