@@ -1,7 +1,5 @@
 package entries;
 
-import entries.Task;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
