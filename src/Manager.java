@@ -74,42 +74,27 @@ public class Manager {
 
     // получить список всех задач
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> tasksList= new ArrayList<>();
-        for (Integer id : tasks.keySet()) {
-            Task task = tasks.get(id);
-            tasksList.add(task);
-        }
-        return tasksList;
+        return new ArrayList<>(tasks.values());
     }
 
     // получить список всех эпиков
     public ArrayList<Epic> getEpics() {
-        ArrayList<Epic> epicsList = new ArrayList<>();
-        for (Integer id : epics.keySet()) {
-            Epic epic = epics.get(id);
-            epicsList.add(epic);
-        }
-        return epicsList;
+        return new ArrayList<>(epics.values());
     }
 
     // получить список всех подзадач
     public ArrayList<Subtask> getSubtasks() {
-        ArrayList<Subtask> subtasksList = new ArrayList<>();
-        for (Integer id : subtasks.keySet()) {
-            Subtask subtask = subtasks.get(id);
-            subtasksList.add(subtask);
-        }
-        return subtasksList;
+        return new ArrayList<>(subtasks.values());
     }
 
     // получить список всех подзадач одного эпика
     public ArrayList<Subtask> getSubtasksInEpic(int epicId) {
         ArrayList<Subtask> subtasksList = new ArrayList<>();
-        for (Integer subtaskId : subtasks.keySet()) {
-            Subtask subtask = subtasks.get(subtaskId);
-            if (subtask.getRelatedEpicId() == epicId) {
-                subtasksList.add(subtask);
-            }
+        Epic epic = getEpic(epicId);
+
+        for (Integer subtaskId : epic.getRelatedSubtasks()) {
+            Subtask subtask = getSubtask(subtaskId);
+            subtasksList.add(subtask);
         }
         return subtasksList;
     }
