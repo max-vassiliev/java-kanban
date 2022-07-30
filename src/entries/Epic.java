@@ -16,12 +16,8 @@ public class Epic extends Task {
     }
 
     // удалить ID подзадачи из списка связанных подзадач
-    public void removeRelatedSubtask(int subtaskId) {
-        for (Integer id : relatedSubtasks) {
-            if (id == subtaskId) {
-                relatedSubtasks.remove(id);
-            }
-        }
+    public void removeRelatedSubtask(Integer subtaskId) {
+        relatedSubtasks.remove(subtaskId);
     }
 
     public ArrayList<Integer> getRelatedSubtasks() {
