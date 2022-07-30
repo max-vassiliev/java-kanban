@@ -15,25 +15,31 @@ public class Manager {
     // ДОБАВИТЬ
 
     // добавить задачу
-    public void addTask(Task task) {
-        task.setId(nextId++);
+    public int addTask(Task task) {
+        int newId = nextId++;
+        task.setId(newId);
         tasks.put(task.getId(), task);
+        return newId;
     }
 
     // добавить эпик
-    public void addEpic(Epic epic) {
-        epic.setId(nextId++);
+    public int addEpic(Epic epic) {
+        int newId = nextId++;
+        epic.setId(newId);
         checkEpicStatus(epic);
         epics.put(epic.getId(), epic);
+        return newId;
     }
 
     // добавить подзадачу
-    public void addSubtask(Subtask subtask) {
-        subtask.setId(nextId++);
+    public int addSubtask(Subtask subtask) {
+        int newId = nextId++;
+        subtask.setId(newId);
         setEpicSubtaskRelation(subtask);
         subtasks.put(subtask.getId(), subtask);
         Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
         checkEpicStatus(relatedEpic);
+        return newId;
     }
 
     // ОБНОВИТЬ
