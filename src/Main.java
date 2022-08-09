@@ -6,7 +6,7 @@ import tests.*;
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        InMemoryTaskManager manager = new InMemoryTaskManager();
 
         // Тестируем приложение
 
@@ -77,7 +77,7 @@ public class Main {
 
     }
 
-    public static void printEntries(int roundNumber, Manager manager) {
+    public static void printEntries(int roundNumber, InMemoryTaskManager manager) {
         System.out.println("-----------------------------");
         System.out.println("РАУНД " + roundNumber);
         System.out.println("-----------------------------");
