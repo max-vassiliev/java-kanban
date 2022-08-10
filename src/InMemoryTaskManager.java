@@ -19,7 +19,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addTask(Task task) {
         int newId = nextId++;
+        Status status = convertStatus(task.getStatusRaw());
+
         task.setId(newId);
+        task.setStatus(status);
         tasks.put(task.getId(), task);
         return newId;
     }
@@ -38,7 +41,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addSubtask(Subtask subtask) {
         int newId = nextId++;
+        Status status = convertStatus(subtask.getStatusRaw());
+
         subtask.setId(newId);
+        subtask.setStatus(status);
         setEpicSubtaskRelation(subtask);
         subtasks.put(subtask.getId(), subtask);
         Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
@@ -51,6 +57,8 @@ public class InMemoryTaskManager implements TaskManager {
     // обновить задачу
     @Override
     public void updateTask(Task task) {
+        Status status = convertStatus(task.getStatusRaw());
+        task.setStatus(status);
         tasks.put(task.getId(), task);
     }
 
@@ -63,6 +71,8 @@ public class InMemoryTaskManager implements TaskManager {
     // обновить подзадачу
     @Override
     public void updateSubtask (Subtask subtask) {
+        Status status = convertStatus(subtask.getStatusRaw());
+        subtask.setStatus(status);
         subtasks.put(subtask.getId(), subtask);
         Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
         checkEpicStatus(relatedEpic);
