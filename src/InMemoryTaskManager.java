@@ -186,29 +186,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     // проверить статус эпика
     private void checkEpicStatus(Epic epic) {
-        int done = 0;
-        int inProgress = 0;
+        int statusDone = 0;
+        int statusNew = 0;
 
         if (epic.getRelatedSubtasks().isEmpty()) {
-            epic.setStatusRaw("NEW");
+            epic.setStatus(Status.NEW);
             return;
         }
 
         for (Integer subtaskId : epic.getRelatedSubtasks()) {
             Subtask subtask = subtasks.get(subtaskId);
-            if (subtask.getStatusRaw().equals("DONE")) {
-                done += 1;
-            } else if (subtask.getStatusRaw().equals("IN_PROGRESS")) {
-                inProgress += 1;
+            if (Status.NEW.equals(subtask.getStatus())) {
+                statusNew += 1;
+            } else if (Status.DONE.equals(subtask.getStatus())) {
+                statusDone += 1;
             }
         }
 
-        if (done == epic.getRelatedSubtasks().size()) {
-            epic.setStatusRaw("DONE");
-        } else if (inProgress > 0 || (done > 0 && done < epic.getRelatedSubtasks().size())) {
-            epic.setStatusRaw("IN_PROGRESS");
+        if (statusNew == epic.getRelatedSubtasks().size()) {
+            epic.setStatus(Status.NEW);
+        } else if (statusDone == epic.getRelatedSubtasks().size()) {
+            epic.setStatus(Status.DONE);
         } else {
-            epic.setStatusRaw("NEW");
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 
