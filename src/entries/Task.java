@@ -4,14 +4,14 @@ public class Task {
     protected int id;
     protected String title;
     protected String description;
-    protected String status;
+    protected String statusRaw;
     protected TaskStatus taskStatus;
 
-    public Task(int id, String title, String description, String status) {
+    public Task(int id, String title, String description, String statusRaw) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.statusRaw = statusRaw;
     }
 
     public int getId() {
@@ -38,12 +38,12 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
+    public String getStatusRaw() {
+        return statusRaw;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusRaw(String statusRaw) {
+        this.statusRaw = statusRaw;
     }
 
     public TaskStatus getTaskStatus() {
@@ -60,7 +60,7 @@ public class Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
+                ", statusRaw='" + statusRaw + '\'' +
                 "}";
     }
 
