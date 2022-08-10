@@ -5,7 +5,7 @@ public class Task {
     protected String title;
     protected String description;
     protected String statusRaw;
-    protected TaskStatus taskStatus;
+    protected Status status;
 
     public Task(int id, String title, String description, String statusRaw) {
         this.id = id;
@@ -46,12 +46,12 @@ public class Task {
         this.statusRaw = statusRaw;
     }
 
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
