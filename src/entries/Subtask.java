@@ -27,13 +27,14 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "entries.Subtask{" +
+        return "Subtask{" +
                 "relatedEpicTitle='" + relatedEpicTitle + '\'' +
                 ", relatedEpicId=" + relatedEpicId +
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", statusRaw='" + statusRaw + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

@@ -1,4 +1,5 @@
 import entries.Epic;
+import entries.Status;
 import entries.Subtask;
 import entries.Task;
 
@@ -167,6 +168,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+
+    // перевести статус задачи в enum
+    private Status convertStatus(String status) {
+        return Status.valueOf(status);
+    }
 
     // проверить статус эпика
     private void checkEpicStatus(Epic epic) {

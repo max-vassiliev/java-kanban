@@ -56,12 +56,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return "entries.Task{" +
+        return "Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", statusRaw='" + statusRaw + '\'' +
-                "}";
+                ", status=" + status +
+                '}';
     }
-
 }
