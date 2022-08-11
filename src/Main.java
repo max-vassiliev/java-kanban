@@ -1,3 +1,5 @@
+import managers.Managers;
+import managers.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -7,7 +9,7 @@ import tests.*;
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
 
         // Тестируем приложение
 
@@ -78,7 +80,7 @@ public class Main {
 
     }
 
-    public static void printEntries(int roundNumber, InMemoryTaskManager manager) {
+    public static void printEntries(int roundNumber, TaskManager manager) {
         System.out.println("-----------------------------");
         System.out.println("РАУНД " + roundNumber);
         System.out.println("-----------------------------");
