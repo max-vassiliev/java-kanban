@@ -3,7 +3,6 @@ import managers.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import managers.InMemoryTaskManager;
 import tests.*;
 
 public class Main {
@@ -92,7 +91,7 @@ public class Main {
         System.out.println("История просмотров [Тест 2]");
         System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
         System.out.println(manager.getHistory());
-    
+
         // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 3
 
         // получаем задачу, добавляем ее в историю просмотров
