@@ -75,7 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // обновить подзадачу
     @Override
-    public void updateSubtask (Subtask subtask) {
+    public void updateSubtask(Subtask subtask) {
         Status status = convertStatus(subtask.getStatusIn());
         subtask.setStatus(status);
         subtasks.put(subtask.getId(), subtask);
@@ -88,19 +88,25 @@ public class InMemoryTaskManager implements TaskManager {
     // получить задачу
     @Override
     public Task getTask(int taskId) {
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        historyManager.add(task);
+        return task;
     }
 
     // получить эпик
     @Override
     public Epic getEpic(int epicId) {
-        return epics.get(epicId);
+        Epic epic = epics.get(epicId);
+        historyManager.add(epic);
+        return epic;
     }
 
     // получить подзадачу
     @Override
     public Subtask getSubtask (int subtaskId) {
-        return subtasks.get(subtaskId);
+        Subtask subtask = subtasks.get(subtaskId);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     // ПОЛУЧИТЬ СПИСОК ЗАДАЧ
