@@ -1,4 +1,4 @@
 package managers;
 
-public class InMemoryHistoryManager {
+public class InMemoryHistoryManager implements HistoryManager {
 }
