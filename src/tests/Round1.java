@@ -1,8 +1,8 @@
 package tests;
 
-import entries.Epic;
-import entries.Subtask;
-import entries.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 public class Round1 {
 

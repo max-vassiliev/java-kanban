@@ -1,6 +1,6 @@
-import entries.Epic;
-import entries.Subtask;
-import entries.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 import managers.InMemoryTaskManager;
 import tests.*;
 

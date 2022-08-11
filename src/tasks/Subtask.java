@@ -1,4 +1,4 @@
-package entries;
+package tasks;
 
 public class Subtask extends Task {
     protected String relatedEpicTitle;

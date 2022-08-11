@@ -1,7 +1,7 @@
 package tests;
 
-import entries.Subtask;
-import entries.Task;
+import tasks.Subtask;
+import tasks.Task;
 
 public class Round2 {
 
