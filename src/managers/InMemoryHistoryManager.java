@@ -12,6 +12,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private final List<Task> history = new ArrayList<>();
 
+    // добавить задачу в историю просмотров
     @Override
     public void add(Task task) {
         if (history.size() == MAX_HISTORY) {
@@ -22,6 +23,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
+    // показать историю просмотров
     @Override
     public List<Task> getHistory() {
         List<Task> historyReversed = new ArrayList<>(history);
