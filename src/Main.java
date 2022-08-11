@@ -69,6 +69,42 @@ public class Main {
         System.out.println(manager.getEpic(epic2Subtask1.getRelatedEpicId()));
         System.out.println();
 
+        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 1
+
+        // печатаем историю
+        System.out.println("-----------------------------");
+        System.out.println("ИСТОРИЯ ПРОСМОТРОВ");
+        System.out.println("-----------------------------");
+        System.out.println("История просмотров [Тест 1]");
+        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
+        System.out.println(manager.getHistory());
+
+        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 2
+
+        // получаем задачи, добавляем их в историю просмотров
+        manager.getEpic(3);
+        manager.getEpic(4);
+        manager.getTask(2);
+        manager.getSubtask(7);
+
+        // печатаем историю просмотров
+        System.out.println("-----------------------------");
+        System.out.println("История просмотров [Тест 2]");
+        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
+        System.out.println(manager.getHistory());
+    
+        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 3
+
+        // получаем задачу, добавляем ее в историю просмотров
+        manager.getTask(1);
+
+        // печатаем историю просмотров
+        System.out.println("-----------------------------");
+        System.out.println("История просмотров [Тест 3]");
+        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
+        System.out.println(manager.getHistory());
+        System.out.println("\n \n");
+
         // РАУНД 3
 
         // Раунд 3: удаляем одну задачу и один эпик
