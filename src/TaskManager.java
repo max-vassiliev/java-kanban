@@ -3,6 +3,7 @@ import entries.Subtask;
 import entries.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -56,4 +57,6 @@ public interface TaskManager {
 
     void deleteAllSubtasks();
 
+    // показать историю просмотров
+    List<Task> getHistory();
 }
