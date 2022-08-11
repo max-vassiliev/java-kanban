@@ -33,7 +33,7 @@ public class Subtask extends Task {
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", statusRaw='" + statusRaw + '\'' +
+                ", statusIn='" + statusIn + '\'' +
                 ", status=" + status +
                 '}';
     }
