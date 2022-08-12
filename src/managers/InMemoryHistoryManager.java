@@ -4,13 +4,14 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY = 10;
 
-    private final List<Task> history = new ArrayList<>();
+    private final List<Task> history = new LinkedList<>(); 
 
     // добавить задачу в историю просмотров
     @Override
