@@ -11,13 +11,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY = 10;
 
-    private final List<Task> history = new LinkedList<>(); 
+    private final LinkedList<Task> history = new LinkedList<>();
 
     // добавить задачу в историю просмотров
     @Override
     public void add(Task task) {
         if (history.size() == MAX_HISTORY) {
-            history.remove(0);
+            history.removeFirst();
             history.add(task);
         } else {
             history.add(task);
