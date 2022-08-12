@@ -13,6 +13,11 @@ public class Task {
         this.statusIn = statusRaw;
     }
 
+    public Task(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
     public int getId() {
         return id;
     }

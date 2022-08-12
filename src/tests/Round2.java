@@ -27,7 +27,6 @@ public class Round2 {
 
     // в подзадаче 1 эпика 2 меняем статус на DONE
     public static Subtask updateEpic2Subtask1(Subtask subtask) {
-        int subtaskId = subtask.getId();
         int relatedEpicId = subtask.getRelatedEpicId();
         Subtask subtaskUpdate = new Subtask("Сдать ДЗ",
                 "Доделать финальный проект и отправить на проверку.",
