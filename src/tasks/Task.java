@@ -7,10 +7,10 @@ public class Task {
     protected String statusIn;
     protected Status status;
 
-    public Task(String title, String description, String statusRaw) {
+    public Task(String title, String description, String statusIn) {
         this.title = title;
         this.description = description;
-        this.statusIn = statusRaw;
+        this.status = Status.valueOf(statusIn);
     }
 
     public Task(String title, String description) {
