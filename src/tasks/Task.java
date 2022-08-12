@@ -4,7 +4,6 @@ public class Task {
     protected int id;
     protected String title;
     protected String description;
-    protected String statusIn;
     protected Status status;
 
     public Task(String title, String description, String statusIn) {
@@ -42,14 +41,6 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatusIn() {
-        return statusIn;
-    }
-
-    public void setStatusIn(String statusIn) {
-        this.statusIn = statusIn;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -64,7 +55,6 @@ public class Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", statusIn='" + statusIn + '\'' +
                 ", status=" + status +
                 '}';
     }
