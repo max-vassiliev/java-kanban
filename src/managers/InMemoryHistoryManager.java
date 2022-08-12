@@ -27,9 +27,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     // показать историю просмотров
     @Override
     public List<Task> getHistory() {
-        List<Task> historyReversed = new ArrayList<>(history);
-        Collections.reverse(historyReversed);
-        return historyReversed;
+        return history;
     }
 
 }
