@@ -7,8 +7,7 @@ public class Task {
     protected String statusIn;
     protected Status status;
 
-    public Task(int id, String title, String description, String statusRaw) {
-        this.id = id;
+    public Task(String title, String description, String statusRaw) {
         this.title = title;
         this.description = description;
         this.statusIn = statusRaw;
