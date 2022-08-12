@@ -39,7 +39,7 @@ public class Main {
         // РАУНД 2
 
         // Раунд 2: меняем статусы некоторых объектов
-        task1 = Round2.updateTask1(); // DONE
+        task1 = Round2.updateTask1(task1); // DONE
         epic1Subtask1 = Round2.updateEpic1Subtask1(epic1Subtask1); // IN_PROGRESS
         epic2Subtask1 = Round2.updateEpic2Subtask1(epic2Subtask1); // DONE
 

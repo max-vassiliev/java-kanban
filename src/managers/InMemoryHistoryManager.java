@@ -8,7 +8,6 @@ import java.util.List;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY = 10;
-
     private final LinkedList<Task> history = new LinkedList<>();
 
     // добавить задачу в историю просмотров
