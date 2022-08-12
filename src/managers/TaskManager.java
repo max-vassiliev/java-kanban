@@ -31,7 +31,7 @@ public interface TaskManager {
 
     Epic getEpic(int epicId);
 
-    Subtask getSubtask (int subtaskId);
+    Subtask getSubtask(int subtaskId);
 
     // получить список задач
 
