@@ -8,124 +8,211 @@ import tests.*;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
 
-        // Тестируем приложение
+        /* -------------------------------
+           ТЕСТ
+           цель: проверить, как работает история просмотров
+           ------------------------------- */
 
-        // РАУНД 1
+        /* РАУНД 1
+           цель: проверить, что задачи при вызове
+           попадают в историю просмотров  */
 
-        // Раунд 1: создаем объекты
-        Task task1 = Round1.createTask1();
-        Task task2 = Round1.createTask2();
-        Epic epic1 = Round1.createEpic1();
-        Epic epic2 = Round1.createEpic2();
-        Subtask epic1Subtask1 = Round1.createEpic1Subtask1();
-        Subtask epic1Subtask2 = Round1.createEpic1Subtask2();
-        Subtask epic2Subtask1 = Round1.createEpic2Subtask1();
+       /*  создаем задачи:
+           — две стандартные задачи
+           — один эпик с тремя подзадачами
+           — один эпик без подзадач  */
+        Task task1 = HistoryTestR1.createTask1();
+        Task task2 = HistoryTestR1.createTask2();
+        Epic epic1 = HistoryTestR1.createEpic1();
+        Subtask subtask1 = HistoryTestR1.createEpic1Subtask1();
+        Subtask subtask2 = HistoryTestR1.createEpic1Subtask2();
+        Subtask subtask3 = HistoryTestR1.createEpic1Subtask3();
+        Epic epic2 = HistoryTestR1.createEpic2();
 
-        // Раунд 1: добавляем объекты в менеджер, генерируем ID
-        manager.addTask(task1);
-        manager.addTask(task2);
-        manager.addEpic(epic1);
-        manager.addEpic(epic2);
-        manager.addSubtask(epic1Subtask1);
-        manager.addSubtask(epic1Subtask2);
-        manager.addSubtask(epic2Subtask1);
+        // добавляем задачи в менеджер, генерируем ID
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addEpic(epic1);
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
+        taskManager.addEpic(epic2);
 
-        // Раунд 1: печатаем все объекты
-        printEntries(1, manager);
-        System.out.println();
+        // запрашиваем задачи в произвольном порядке
+        taskManager.getTask(task1.getId());         // Задача 1
+        taskManager.getEpic(epic1.getId());         // Эпик 1
+        taskManager.getSubtask(subtask3.getId());   // Подзадача 3
+        taskManager.getSubtask(subtask1.getId());   // Подзадача 1
+        taskManager.getEpic(epic2.getId());         // Эпик 2
+        taskManager.getTask(task2.getId());         // Задача 2
+        taskManager.getSubtask(subtask2.getId());   // Подзадача 2
 
-        // РАУНД 2
+        // печатаем результат
+        printHistoryTest(1, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 7
+		    Задача 1
+		    Эпик 1
+		    Подзадача 3
+		    Подзадача 1
+		    Эпик 2
+		    Задача 2
+		    Подзадача 2
+        */
 
-        // Раунд 2: меняем статусы некоторых объектов
-        task1 = Round2.updateTask1(task1); // DONE
-        epic1Subtask1 = Round2.updateEpic1Subtask1(epic1Subtask1); // IN_PROGRESS
-        epic2Subtask1 = Round2.updateEpic2Subtask1(epic2Subtask1); // DONE
 
-        // Раунд 2: добавляем обновления в программу
-        manager.updateTask(task1);
-        manager.updateSubtask(epic1Subtask1);
-        manager.updateSubtask(epic2Subtask1);
+        /* РАУНД 2
+           цель: проверить, что при повторном вызове
+           меняется положение задач в истории просмотров
+           и что в истории нет повторов */
 
-        // Раунд 2: печатаем обновленные объекты и родственные эпики
-        System.out.println("-----------------------------");
-        System.out.println("РАУНД 2");
-        System.out.println("-----------------------------");
-        System.out.println("Задача '" + task1.getTitle() + "':");
-        System.out.println(manager.getTask(task1.getId()));
-        System.out.println();
-        System.out.println("Подзадача '" + epic1Subtask1.getTitle() + "':");
-        System.out.println(manager.getSubtask(epic1Subtask1.getId()));
-        Epic relatedEpic1 = manager.getEpic(epic1Subtask1.getRelatedEpicId());
-        System.out.println("Входит в эпик '" + relatedEpic1.getTitle() + "':");
-        System.out.println(manager.getEpic(epic1Subtask1.getRelatedEpicId()));
-        System.out.println();
-        System.out.println("Подзадача '" + epic2Subtask1.getTitle() + "':");
-        System.out.println(manager.getSubtask(epic2Subtask1.getId()));
-        Epic relatedEpic2 = manager.getEpic(epic2Subtask1.getRelatedEpicId());
-        System.out.println("Входит в эпик '" + relatedEpic2.getTitle() + "':");
-        System.out.println(manager.getEpic(epic2Subtask1.getRelatedEpicId()));
-        System.out.println();
+        // запрашиваем задачи
+        taskManager.getEpic(epic1.getId());         // Эпик 1
+        taskManager.getSubtask(subtask1.getId());   // Подзадача 1
+        taskManager.getSubtask(subtask2.getId());   // Подзадача 2
+        taskManager.getTask(task1.getId());         // Задача 1
 
-        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 1
+        // печатаем результат
+        printHistoryTest(2, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 7
+		    Подзадача 3
+		    Эпик 2
+		    Задача 2
+		    Эпик 1
+		    Подзадача 1
+		    Подзадача 2
+		    Задача 1
+        */
 
-        // печатаем историю
-        System.out.println("-----------------------------");
-        System.out.println("ИСТОРИЯ ПРОСМОТРОВ");
-        System.out.println("-----------------------------");
-        System.out.println("История просмотров [Тест 1]");
-        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
-        System.out.println(manager.getHistory());
 
-        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 2
+        /* РАУНД 3
+           цель: еще раз убедиться, что при повторном вызове
+           задачи попадают в конец истории просмотров */
 
-        // получаем задачи, добавляем их в историю просмотров
-        manager.getEpic(3);
-        manager.getEpic(4);
-        manager.getTask(2);
-        manager.getSubtask(7);
+        // повторно запрашиваем некоторые задачи из Раунда 2
+        taskManager.getSubtask(subtask1.getId());   // Подзадача 1
+        taskManager.getEpic(epic1.getId());         // Эпик 1
 
-        // печатаем историю просмотров
-        System.out.println("-----------------------------");
-        System.out.println("История просмотров [Тест 2]");
-        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
-        System.out.println(manager.getHistory());
+        // печатаем результат
+        printHistoryTest(3, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 7
+		    Подзадача 3
+            Эпик 2
+            Задача 2
+            Подзадача 2
+            Задача 1
+            Подзадача 1
+            Эпик 1
+        */
 
-        // ИСТОРИЯ ПРОСМОТРОВ - ТЕСТ 3
 
-        // получаем задачу, добавляем ее в историю просмотров
-        manager.getTask(1);
+        /* РАУНД 4
+           цель: проверить, что история просмотров
+           будет хранить не более 10 задач */
 
-        // печатаем историю просмотров
-        System.out.println("-----------------------------");
-        System.out.println("История просмотров [Тест 3]");
-        System.out.println("Всего " + (manager.getHistory().size()) + " задач:");
-        System.out.println(manager.getHistory());
-        System.out.println("\n \n");
+        // сейчас есть семь задач
+        // создаем еще четыре и добавляем в менеджер
+        Task bonusTask1 = HistoryTestR4.createBonusTask1();
+        Task bonusTask2 = HistoryTestR4.createBonusTask2();
+        Task bonusTask3 = HistoryTestR4.createBonusTask3();
+        Task bonusTask4 = HistoryTestR4.createBonusTask4();
+        taskManager.addTask(bonusTask1);
+        taskManager.addTask(bonusTask2);
+        taskManager.addTask(bonusTask3);
+        taskManager.addTask(bonusTask4);
 
-        // РАУНД 3
+        // запрашиваем новые задачи
+        taskManager.getTask(bonusTask4.getId());    //  Еще задача 4
+        taskManager.getTask(bonusTask2.getId());    //  Еще задача 2
+        taskManager.getTask(bonusTask1.getId());    //  Еще задача 1
+        taskManager.getTask(bonusTask3.getId());    //  Еще задача 3
+        taskManager.getTask(bonusTask4.getId());    //  Еще задача 4 (повтор)
 
-        // Раунд 3: удаляем одну задачу и один эпик
-        manager.deleteTask(task1);
-        manager.deleteEpic(epic1);
+        // печатаем результат
+        printHistoryTest(4, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 10
+		    Эпик 2
+		    Задача 2
+		    Подзадача 2
+		    Задача 1
+		    Подзадача 1
+		    Эпик 1
+		    Еще задача 2
+		    Еще задача 1
+		    Еще задача 3
+		    Еще задача 4
+        */
 
-        // Раунд 3: смотрим, что осталось
-        printEntries(3, manager);
+
+        /* РАУНД 5
+           цель: проверить, что при удалении
+           задача пропадет из истории просмотров */
+
+        // удаляем задачу
+        taskManager.deleteTask(task1);  // Задача 1
+
+        // печатаем результат
+        printHistoryTest(5, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 9
+		    Эпик 2
+		    Задача 2
+		    Подзадача 2
+		    Подзадача 1
+		    Эпик 1
+		    Еще задача 2
+		    Еще задача 1
+		    Еще задача 3
+		    Еще задача 4
+		- - -
+		Пропадет из истории:
+		    Задача 1
+        */
+
+
+        /* РАУНД 6
+           цель: проверить, что при удалении эпика
+           из истории пропадет сам эпик и его подзадачи */
+
+        // удаляем эпик, где есть подзадачи
+        taskManager.deleteEpic(epic1);      // Эпик 1
+
+        // печатаем результат
+        printHistoryTest(6, taskManager);
+        /*
+        Ожидаемый порядок вывода:
+        Задач в истории: 6
+		    Эпик 2
+		    Задача 2
+		    Еще задача 2
+		    Еще задача 1
+		    Еще задача 3
+		    Еще задача 4
+		- - -
+		Пропадут из истории:
+		    Подзадача 2
+		    Подзадача 1
+		    Эпик 1
+        */
 
     }
 
-    public static void printEntries(int roundNumber, TaskManager manager) {
+    public static void printHistoryTest(int roundNumber, TaskManager taskManager) {
         System.out.println("-----------------------------");
         System.out.println("РАУНД " + roundNumber);
         System.out.println("-----------------------------");
-        System.out.println("Список задач:");
-        System.out.println(manager.getTasks());
-        System.out.println("-----------------------------");
-        System.out.println("Список эпиков:");
-        System.out.println(manager.getEpics());
-        System.out.println("-----------------------------");
-        System.out.println("Список подзадач:");
-        System.out.println(manager.getSubtasks());
+        System.out.println("Задач в истории: " + taskManager.getHistory().size());
+        System.out.println(taskManager.getHistory());
+        System.out.println("----------------------------- \n \n");
     }
 }
