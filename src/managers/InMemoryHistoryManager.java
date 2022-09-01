@@ -8,24 +8,34 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY = 10;
-    private final LinkedList<Task> history = new LinkedList<>();
+    private final CustomLinkedList<Task> history = new CustomLinkedList<>();
     private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
+
 
     // добавить задачу в историю просмотров
     @Override
     public void add(Task task) {
-        if (history.size() == MAX_HISTORY) {
-            history.removeFirst();
-            history.add(task);
-        } else {
-            history.add(task);
+        history.linkLast(task);
+        if (historyMap.size() > MAX_HISTORY) {
+            int headId = history.head.data.getId();
+            history.removeNode(history.head);
+            historyMap.remove(headId);
         }
     }
 
-    // показать историю просмотров
+
+    //  удалить задачу из истории просмотров
+    @Override
+    public void remove(int id) {
+        Node<Task> node = historyMap.get(id);
+        history.removeNode(node);
+        historyMap.remove(id);
+    }
+
+    // получить историю просмотров
     @Override
     public List<Task> getHistory() {
-        return history;
+        return history.getTasks();
     }
 
     class CustomLinkedList<T> {
@@ -64,7 +74,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return elementsInList;
         }
 
-        // удалить узел из истории
+        // удалить узел из истории просмотров
         private void removeNode(Node<Task> node) {
             if (node == null) {
                 return;
