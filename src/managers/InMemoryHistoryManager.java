@@ -8,7 +8,7 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY = 10;
-    private final CustomLinkedList<Task> history = new CustomLinkedList<>();
+    private final CustomLinkedList history = new CustomLinkedList();
     private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
 
 
@@ -38,7 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history.getTasks();
     }
 
-    class CustomLinkedList<T> {
+    class CustomLinkedList {
         private Node<Task> head;
         private Node<Task> tail;
 
