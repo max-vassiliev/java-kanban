@@ -93,7 +93,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 prevNode.next = nextNode;
                 nextNode.prev = prevNode;
             }
-            node = null;
         }
     }
 }
