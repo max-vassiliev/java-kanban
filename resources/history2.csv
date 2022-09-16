@@ -4,4 +4,4 @@ Epic{id=2, title='Epic2', description='Description epic2', status=DONE', related
 Subtask{id=3, title='Sub Task2', description='Description sub task3', status=DONE, relatedEpicTitle='null', relatedEpicId=2}
 Task{id=4, title='Еще задача 1', description='Еще задача 1', status=NEW}
 
-2,3,4
+2,4,3

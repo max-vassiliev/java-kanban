@@ -5,6 +5,7 @@ public class Task {
     protected String title;
     protected String description;
     protected Status status;
+    protected TaskType type;
 
     public Task(String title, String description, String statusIn) {
         this.title = title;
@@ -47,6 +48,14 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
     }
 
     @Override

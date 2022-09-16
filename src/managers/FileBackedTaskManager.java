@@ -20,27 +20,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private static final String LINE_SEPARATOR = "\n";
     private static final String SECTION_SEPARATOR = "\n\n";
 
+    private static final String BACKUP_FILE_HEADING = "id,type,name,status,description,epic\n";
+
     private final String historyPath;
 
 
-    public FileBackedTaskManager(String historyPath) throws IOException {
+    public FileBackedTaskManager(String historyPath) {
         this.historyPath = historyPath;
-        File historyFile = new File(historyPath);
-        String content = readFile(historyFile);
+//        File historyFile = new File(historyPath);
+        String content = readFile(new File(historyPath));
 
-        // TODO разобраться, как распределить проверку исключения и isBlank
-        if (content != null || content.isBlank()) {
+        // восстанавливаем список задач и историю просмотров
+        if (content != null || !content.isBlank()) {                //TODO распределить условия, оставить isBlank()
             String[] split = content.split(SECTION_SEPARATOR);
             String tasksData = split[0];
             String historyData = split[1];
 
-            // получаем задачи из файла и добавляем в менеджер задач
+            // получаем задачи и добавляем в менеджер задач
             String[] taskRows = tasksData.split(LINE_SEPARATOR);
             for (int i = 1; i < taskRows.length; i++) {
                 fromString(taskRows[i]);
             }
 
-            // получаем историю из файла и добавляем в менеджер истории
+            // получаем историю и добавляем в менеджер истории
             List<Integer> history = historyFromString(historyData);
             for (Integer id : history) {
                 if (tasks.containsKey(id)) {
@@ -54,7 +56,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-
     public static void main(String[] args) throws IOException {
 
         String historyFile1 = "history1.csv";
@@ -64,40 +65,44 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         Task bonusTask1 = HistoryTestR4.createBonusTask1();
         taskManager.addTask(bonusTask1);
         taskManager.getTask(bonusTask1.getId());
+        taskManager.getSubtask(3);
         taskManager.save();
     }
 
-    static FileBackedTaskManager loadFromFile(File file) throws IOException {
+    static FileBackedTaskManager loadFromFile(File file) {
         return new FileBackedTaskManager(file.getPath());
     }
 
-    // TODO заглушка
-    public void save() throws IOException {
-        String content = Files.readString(Path.of(historyPath));
-        StringBuilder sb = new StringBuilder(content);
-        List<Task> sortedTasks = sortTasks();
-        List<Task> historyList = getHistory();
 
-        try(FileWriter fw = new FileWriter(new File(HOME, "history2.csv"))) {
-            fw.write("id,type,name,status,description,epic\n");
+
+    // TODO новый метод
+    public void save() throws IOException {
+        List<Task> sortedTasks = sortTasks();
+
+        try(FileWriter fw = new FileWriter(new File(HOME, "history2.csv"))) { // TODO поменять файл
+            fw.write(BACKUP_FILE_HEADING);
             for (Task task : sortedTasks) {
-                fw.write(task.toString() + "\n"); // TODO преписать метод toString()
+                fw.write(task.toString() + LINE_SEPARATOR); // TODO преписать метод toString()
             }
             fw.write('\n');
-            for (int i = 0; i < historyList.size(); i++) {
-                if (i == historyList.size() - 1) {
-                    Task lastInHistory = historyList.get(i);
-                    fw.write(String.valueOf(lastInHistory.getId()));
-                } else {
-                    fw.write(historyList.get(i).getId() + ",");
-                }
-            }
+            fw.write(historyToString(historyManager));
         } catch (IOException e) {                   //TODO добавить ManagerSaveException
             System.out.println("Ошибка при сохранении истории");
         }
     }
 
-    // TODO проверить нужность метода
+    static String historyToString(HistoryManager manager) {
+        List<Task> history = manager.getHistory();
+        StringBuilder sb = new StringBuilder();
+
+        for (Task task : history) {
+            sb.append(task.getId()).append(ITEM_SEPARATOR);
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    // отсортировать задачи по ID
     public List<Task> sortTasks() {
         List<Task> sortedTasks = new ArrayList<>();
         TaskIdComparator taskIdComparator = new TaskIdComparator();
@@ -109,13 +114,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return sortedTasks;
     }
 
-    // TODO возможно, исключение можно будет убрать
-    String readFile(File file) throws IOException {
+    // получить содержание файла
+    String readFile(File file) {
         try {
-            String content = Files.readString(Path.of(file.getPath()));
-            return content;
+            return Files.readString(Path.of(file.getPath()));
         } catch (IOException e) {
-            System.out.println("Ошибка в методе readFile"); // TODO переписать строку
+            System.out.println("Ошибка при загрузке сохраненных данных");
             return null;
         }
     }
@@ -131,21 +135,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         switch (type) {
             case TASK:
                 Task task = new Task(data[2], data[4], data[3]);
-                task.setId(id);         // TODO возможно, поменять на checkId();
+                task.setId(id);         // TODO возможно, поменять на checkId(); — кажется, НЕ НАДО менять
                 addTask(task);          // TODO возможно, поменять на tasks.put(id, task);
                 taskFromString = task;
                 break;
             case EPIC:
                 Epic epic = new Epic(data[2], data[4]);
-                epic.setId(id);         // TODO
-                addEpic(epic);          // TODO
+                epic.setId(id);         // TODO — кажется, НЕ НАДО менять
+                addEpic(epic);          // TODO — кажется, НЕ НАДО менять
                 taskFromString = epic;
                 break;
             case SUBTASK:
                 int epicId = Integer.parseInt(data[5]);
                 Subtask subtask = new Subtask(data[2], data[4], data[3], epicId);
-                subtask.setId(id);      // TODO
-                addSubtask(subtask);    // TODO
+                subtask.setId(id);      // TODO — кажется, НЕ НАДО менять
+                addSubtask(subtask);    // TODO — кажется, НЕ НАДО менять
                 taskFromString = subtask;
                 break;
             default:
@@ -155,15 +159,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return taskFromString;
     }
 
-    //TODO новый метод
+    // восстановить список задач в истории из списка ID в резервной копии
     static List<Integer> historyFromString(String historyData) {
         String[] split = historyData.split(ITEM_SEPARATOR);
         List<Integer> history = new ArrayList<>();
 
-        for (int i = 0; i < split.length; i++) {
-            history.add(Integer.parseInt(split[i]));
+        for (String id : split) {
+            history.add(Integer.parseInt(id));
         }
-
         return history;
     }
 }
