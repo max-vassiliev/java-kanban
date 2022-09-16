@@ -25,11 +25,11 @@ public class InMemoryTaskManager implements TaskManager {
 //            newId = nextId++;
 //            task.setId(newId);
 //        }
-        int id = checkId(task);
-
+        int id = nextId++;
+        task.setId(id);
         task.setType(TaskType.TASK);
-        tasks.put(id, task);
-        return task.getId();
+        tasks.put(task.getId(), task);
+        return id;
     }
 
     // добавить эпик
@@ -37,11 +37,11 @@ public class InMemoryTaskManager implements TaskManager {
     public int addEpic(Epic epic) {
 //        int newId = nextId++;                 // TODO удалить, если не пригодится
 //        epic.setId(newId);
-        int id = checkId(epic);
-
+        int id = nextId++;
+        epic.setId(id);
         epic.setType(TaskType.EPIC);
         checkEpicStatus(epic);
-        epics.put(id, epic);
+        epics.put(epic.getId(), epic);
         return id;
     }
 
@@ -50,11 +50,11 @@ public class InMemoryTaskManager implements TaskManager {
     public int addSubtask(Subtask subtask) {
 //        int newId = nextId++;                 // TODO удалить, если не пригодится
 //        subtask.setId(newId);
-        int id = checkId(subtask);
-
+        int id = nextId++;
+        subtask.setId(id);
         subtask.setType(TaskType.SUBTASK);
         setEpicSubtaskRelation(subtask);
-        subtasks.put(id, subtask);
+        subtasks.put(subtask.getId(), subtask);
         Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
         checkEpicStatus(relatedEpic);
         return id;
@@ -215,20 +215,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
-    // проверить ID и установить, если нет
-    public int checkId(Task task) {         // TODO поменять на private / protected, если не критично
-        int id = task.getId();
-        if (id == 0) {
-            id = nextId++;
-            task.setId(id);
-        } else if (id >= nextId) {
+    // проверить счетчик ID
+    // при восстановлении задач из резервной копии
+    public void checkNextId(int id) {         // TODO поменять на private / protected, если не критично
+        if (id >= nextId) {
             nextId = id + 1;
         }
-        return id;
     }
 
     // проверить статус эпика
-    private void checkEpicStatus(Epic epic) {
+    protected void checkEpicStatus(Epic epic) {
         int statusDone = 0;
         int statusNew = 0;
 

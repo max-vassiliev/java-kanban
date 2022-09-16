@@ -1,7 +1,7 @@
 id,type,name,status,description,epic
-Task{id=1, title='Task1', description='Description task1', status=NEW}
-Epic{id=2, title='Epic2', description='Description epic2', status=DONE', relatedSubtasks=[3]}
-Subtask{id=3, title='Sub Task2', description='Description sub task3', status=DONE, relatedEpicTitle='null', relatedEpicId=2}
-Task{id=4, title='Еще задача 1', description='Еще задача 1', status=NEW}
+1,TASK,Task1,NEW,Description task1,
+2,EPIC,Epic2,null,Description epic2,
+3,SUBTASK,Sub Task2,DONE,Description sub task3,2
+4,TASK,Еще задача 1,NEW,Еще задача 1,
 
 2,4,3
