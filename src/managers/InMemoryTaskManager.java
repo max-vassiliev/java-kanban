@@ -213,10 +213,11 @@ public class InMemoryTaskManager implements TaskManager {
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
     // проверить ID и установить, если нет
-    private int checkId(Task task) {
+    public int checkId(Task task) {         // TODO поменять на private / protected, если не критично
         int id = task.getId();
         if (id == 0) {
-            task.setId(nextId++);
+            id = nextId++;
+            task.setId(id);
         } else if (id >= nextId) {
             nextId = id + 1;
         }

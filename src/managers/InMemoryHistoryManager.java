@@ -23,7 +23,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-
     //  удалить задачу из истории просмотров
     @Override
     public void remove(int id) {

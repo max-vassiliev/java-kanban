@@ -4,42 +4,43 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskType;
+import tests.HistoryTestR4;
+import utilities.TaskIdComparator;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 // TODO возможно, исключение можно будет убрать
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
     private static final String HOME = "resources";
-    private static final String COLUMN_SEPARATOR = ",";
-    private static final String ROW_SEPARATOR = "\n";
-    private static final String TASKS_HISTORY_SEPARATOR = "\n\n";
+    private static final String ITEM_SEPARATOR = ",";
+    private static final String LINE_SEPARATOR = "\n";
+    private static final String SECTION_SEPARATOR = "\n\n";
 
-    private final Path historyPath;
+    private final String historyPath;
 
-    public FileBackedTaskManager(Path historyPath) throws IOException {
+
+    public FileBackedTaskManager(String historyPath) throws IOException {
         this.historyPath = historyPath;
-        File docFile = new File(String.valueOf(historyPath));
-        String content = loadFromFile(docFile);
+        File historyFile = new File(historyPath);
+        String content = readFile(historyFile);
 
-        if (content != null) {
-            String[] split = content.split(TASKS_HISTORY_SEPARATOR);
+        // TODO разобраться, как распределить проверку исключения и isBlank
+        if (content != null || content.isBlank()) {
+            String[] split = content.split(SECTION_SEPARATOR);
             String tasksData = split[0];
             String historyData = split[1];
 
-            // получаем задачи из файла и добавляем в менеджер
-            String[] taskRows = tasksData.split(ROW_SEPARATOR);
+            // получаем задачи из файла и добавляем в менеджер задач
+            String[] taskRows = tasksData.split(LINE_SEPARATOR);
             for (int i = 1; i < taskRows.length; i++) {
-                fromString(taskRows[i]); // TODO тут что-то еще нужно для истории
+                fromString(taskRows[i]);
             }
 
-            // получаем историю из файла и добавляем в менеджер
+            // получаем историю из файла и добавляем в менеджер истории
             List<Integer> history = historyFromString(historyData);
             for (Integer id : history) {
                 if (tasks.containsKey(id)) {
@@ -51,7 +52,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 }
             }
         }
-
     }
 
 
@@ -59,61 +59,72 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
         String historyFile1 = "history1.csv";
 
-        FileBackedTaskManager manager = new FileBackedTaskManager(Paths.get(HOME, historyFile1));
+        FileBackedTaskManager taskManager = loadFromFile(new File(HOME, historyFile1));
 
+        Task bonusTask1 = HistoryTestR4.createBonusTask1();
+        taskManager.addTask(bonusTask1);
+        taskManager.getTask(bonusTask1.getId());
+        taskManager.save();
+    }
 
+    static FileBackedTaskManager loadFromFile(File file) throws IOException {
+        return new FileBackedTaskManager(file.getPath());
+    }
 
+    // TODO заглушка
+    public void save() throws IOException {
+        String content = Files.readString(Path.of(historyPath));
+        StringBuilder sb = new StringBuilder(content);
+        List<Task> sortedTasks = sortTasks();
+        List<Task> historyList = getHistory();
+
+        try(FileWriter fw = new FileWriter(new File(HOME, "history2.csv"))) {
+            fw.write("id,type,name,status,description,epic\n");
+            for (Task task : sortedTasks) {
+                fw.write(task.toString() + "\n"); // TODO преписать метод toString()
+            }
+            fw.write('\n');
+            for (int i = 0; i < historyList.size(); i++) {
+                if (i == historyList.size() - 1) {
+                    Task lastInHistory = historyList.get(i);
+                    fw.write(String.valueOf(lastInHistory.getId()));
+                } else {
+                    fw.write(historyList.get(i).getId() + ",");
+                }
+            }
+        } catch (IOException e) {                   //TODO добавить ManagerSaveException
+            System.out.println("Ошибка при сохранении истории");
+        }
+    }
+
+    // TODO проверить нужность метода
+    public List<Task> sortTasks() {
+        List<Task> sortedTasks = new ArrayList<>();
+        TaskIdComparator taskIdComparator = new TaskIdComparator();
+
+        sortedTasks.addAll(tasks.values());
+        sortedTasks.addAll(epics.values());
+        sortedTasks.addAll(subtasks.values());
+        sortedTasks.sort(taskIdComparator);
+        return sortedTasks;
     }
 
     // TODO возможно, исключение можно будет убрать
-    String loadFromFile(File file) throws IOException {
+    String readFile(File file) throws IOException {
         try {
-            String content = Files.readString(Path.of(String.valueOf(file)));
+            String content = Files.readString(Path.of(file.getPath()));
             return content;
         } catch (IOException e) {
-            System.out.println("Ошибка в методе loadFromFile"); // TODO переписать строку
+            System.out.println("Ошибка в методе readFile"); // TODO переписать строку
             return null;
         }
     }
-//        Reader reader = new FileReader(file);
-//        BufferedReader br = new BufferedReader(reader);
-//        while (br.ready()) {
-//            String line = br.readLine();
-//
-//            // если в файле ничего нет, возвращаем null
-//            if (line.isBlank()) {
-//                return null;
-//            }
-//
-//
-//
-//            System.out.println("Строка: " + line);
-//        }
-//        String content = Files.readString(Path.of(String.valueOf(file)));
 
-
-//        if (content.isBlank()) {
-//            return null;
-//        }
-//
-//        String[] split = content.split(TASKS_HISTORY_SEPARATOR);
-//        String tasksData = split[0];
-//        String historyData = split[1];
-//
-//        String[] taskRows = tasksData.split(ROW_SEPARATOR);
-//
-//        for (int i = 1; i <= taskRows.length; i++) {
-//            String[] data = taskRows[i].split(COLUMN_SEPARATOR);
-//
-//        }
-//
-//
-//        return null;
 
     // TODO новый метод быть верный
     private Task fromString(String taskRow) {
         Task taskFromString;
-        String[] data = taskRow.split(COLUMN_SEPARATOR);
+        String[] data = taskRow.split(ITEM_SEPARATOR);
         int id = Integer.parseInt(data[0]);
         TaskType type = TaskType.valueOf(data[1]);
 
@@ -146,7 +157,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     //TODO новый метод
     static List<Integer> historyFromString(String historyData) {
-        String[] split = historyData.split(COLUMN_SEPARATOR);
+        String[] split = historyData.split(ITEM_SEPARATOR);
         List<Integer> history = new ArrayList<>();
 
         for (int i = 0; i < split.length; i++) {
@@ -155,14 +166,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
         return history;
     }
+}
 
 
     // TODO [Вариант 1] возможно, удалить
 //     private void tasksFromString(String tasksData) {
-//         String[] taskRows = tasksData.split(ROW_SEPARATOR);
+//         String[] taskRows = tasksData.split(LINE_SEPARATOR);
 //
 //         for (int i = 1; i <= taskRows.length; i++) {
-//             String[] data = taskRows[i].split(COLUMN_SEPARATOR);
+//             String[] data = taskRows[i].split(ITEM_SEPARATOR);
 //             int id = Integer.parseInt(data[0]);
 //             switch (data[1]) {
 //                 case "TASK":
@@ -222,4 +234,39 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 //        }
 //    }
 
-}
+
+//        [удаленный код для метода readFile]
+//        Reader reader = new FileReader(file);
+//        BufferedReader br = new BufferedReader(reader);
+//        while (br.ready()) {
+//            String line = br.readLine();
+//
+//            // если в файле ничего нет, возвращаем null
+//            if (line.isBlank()) {
+//                return null;
+//            }
+//
+//
+//
+//            System.out.println("Строка: " + line);
+//        }
+//        String content = Files.readString(Path.of(String.valueOf(file)));
+
+
+//        if (content.isBlank()) {
+//            return null;
+//        }
+//
+//        String[] split = content.split(SECTION_SEPARATOR);
+//        String tasksData = split[0];
+//        String historyData = split[1];
+//
+//        String[] taskRows = tasksData.split(LINE_SEPARATOR);
+//
+//        for (int i = 1; i <= taskRows.length; i++) {
+//            String[] data = taskRows[i].split(ITEM_SEPARATOR);
+//
+//        }
+//
+//
+//        return null;
