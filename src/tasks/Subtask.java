@@ -9,7 +9,6 @@ public class Subtask extends Task {
         this.relatedEpicTitle = relatedEpicTitle;
     }
 
-    //TODO новый конструктор; возможно, получится оптимизировать
     public Subtask(String title, String description, String status, int relatedEpicId) {
         super(title, description, status);
         this.relatedEpicId = relatedEpicId;
