@@ -132,6 +132,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         Изменения отображаются в файле: resources/backup-bonus.csv
 
         Чтобы запустить тест, нужно раскомментировать три строки кода ниже.
+
         -------------------------------      */
 
 //        String backupFileBonus = "backup-bonus.csv";
