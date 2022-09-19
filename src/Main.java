@@ -32,13 +32,13 @@ public class Main {
         Epic epic2 = HistoryTestR1.createEpic2();
 
         // добавляем задачи в менеджер, генерируем ID
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-        taskManager.addEpic(epic1);
-        taskManager.addSubtask(subtask1);
-        taskManager.addSubtask(subtask2);
-        taskManager.addSubtask(subtask3);
-        taskManager.addEpic(epic2);
+        taskManager.add(task1);
+        taskManager.add(task2);
+        taskManager.add(epic1);
+        taskManager.add(subtask1);
+        taskManager.add(subtask2);
+        taskManager.add(subtask3);
+        taskManager.add(epic2);
 
         // запрашиваем задачи в произвольном порядке
         taskManager.getTask(task1.getId());         // Задача 1
@@ -123,10 +123,10 @@ public class Main {
         Task bonusTask2 = HistoryTestR4.createBonusTask2();
         Task bonusTask3 = HistoryTestR4.createBonusTask3();
         Task bonusTask4 = HistoryTestR4.createBonusTask4();
-        taskManager.addTask(bonusTask1);
-        taskManager.addTask(bonusTask2);
-        taskManager.addTask(bonusTask3);
-        taskManager.addTask(bonusTask4);
+        taskManager.add(bonusTask1);
+        taskManager.add(bonusTask2);
+        taskManager.add(bonusTask3);
+        taskManager.add(bonusTask4);
 
         // запрашиваем новые задачи
         taskManager.getTask(bonusTask4.getId());    //  Еще задача 4
@@ -158,7 +158,7 @@ public class Main {
            задача пропадет из истории просмотров */
 
         // удаляем задачу
-        taskManager.deleteTask(task1);  // Задача 1
+        taskManager.delete(task1);  // Задача 1
 
         // печатаем результат
         printHistoryTest(5, taskManager);
@@ -185,7 +185,7 @@ public class Main {
            из истории пропадет сам эпик и его подзадачи */
 
         // удаляем эпик, где есть подзадачи
-        taskManager.deleteEpic(epic1);      // Эпик 1
+        taskManager.delete(epic1);      // Эпик 1
 
         // печатаем результат
         printHistoryTest(6, taskManager);

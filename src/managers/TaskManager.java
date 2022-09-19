@@ -10,27 +10,27 @@ public interface TaskManager {
 
     // добавить задачу
 
-    int addTask(Task task);
+    int add(Task task);
 
-    int addEpic(Epic epic);
+    int add(Epic epic);
 
-    int addSubtask(Subtask subtask);
+    int add(Subtask subtask);
 
     // обновить задачу
 
-    void updateTask(Task task);
+    void update(Task task);
 
-    void updateEpic(Epic epic);
+    void update(Epic epic);
 
-    void updateSubtask (Subtask subtask);
+    void update(Subtask subtask);
 
     // получить задачу
 
-    Task getTask(int taskId);
+    Task getTask(int id);
 
-    Epic getEpic(int epicId);
+    Epic getEpic(int id);
 
-    Subtask getSubtask(int subtaskId);
+    Subtask getSubtask(int id);
 
     // получить список задач
 
@@ -44,11 +44,11 @@ public interface TaskManager {
 
     // удалить задачу
 
-    void deleteTask(Task task);
+    void delete(Task task);
 
-    void deleteEpic(Epic epic);
+    void delete(Epic epic);
 
-    void deleteSubtask(Subtask subtask);
+    void delete(Subtask subtask);
 
     // удалить все задачи одного типа
 
