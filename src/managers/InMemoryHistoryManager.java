@@ -77,6 +77,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         private void removeNode(Node<Task> node) {
             if (node == null) {
                 return;
+            } else if (node.prev == null && node.next == null) {
+                head = null;
+                tail = null;
+                return;
             }
             if (node.prev == null) {
                 Node<Task> nextNode = node.next;
