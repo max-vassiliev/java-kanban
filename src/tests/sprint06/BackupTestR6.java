@@ -1,4 +1,4 @@
-package tests;
+package tests.sprint06;
 
 import tasks.Epic;
 import tasks.Subtask;

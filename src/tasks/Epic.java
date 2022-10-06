@@ -6,10 +6,14 @@ import java.util.List;
 public class Epic extends Task {
     protected List<Integer> relatedSubtasks;
 
+    // TODO добавить поле endTime;
+
     public Epic(String title, String description) {
         super(title, description);
         relatedSubtasks = new ArrayList<>();
     }
+
+    // TODO добавить расчет duration и getEndTime
 
     // добавить ID связанной подзадачи
     public void addRelatedSubtask(int subtaskId) {

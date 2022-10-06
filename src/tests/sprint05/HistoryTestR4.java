@@ -1,4 +1,4 @@
-package tests;
+package tests.sprint05;
 
 import tasks.Task;
 

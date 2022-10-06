@@ -1,13 +1,31 @@
-package tests;
+package tests.sprint06;
 
 import managers.FileBackedTaskManager;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
 
-public class BackupTestBonus {
+public class Sprint6BackupTestBonus {
 
     public static void backupTestBonus(FileBackedTaskManager taskManager) {
+
+        // TODO - ниже удаленные комментарии из метода main в FileBackedTaskManager
+
+
+        /*      -------------------------------
+
+        ТЕСТ (BONUS)
+
+        -------------------------------      */
+
+        /*        Расширенный тест.
+        Код находится в файле: tests/BackupTestBonus.java
+        Изменения отображаются в файле: resources/backup-bonus.csv
+
+        Чтобы запустить тест, нужно раскомментировать три строки кода ниже.*/
+
+//        String backupFileBonus = "backup-bonus.csv";
+//        FileBackedTaskManager taskManagerBonus = loadFromFile(new File(HOME, backupFileBonus));
+//        Sprint6BackupTestBonus.backupTestBonus(taskManagerBonus);
+
+        // TODO конец удаленного кода из main в FileBackedTaskManager
 
      /* -------------------------------
         ТЕСТ (BONUS)

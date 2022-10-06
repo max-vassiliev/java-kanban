@@ -3,7 +3,8 @@ import managers.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tests.*;
+import tests.sprint05.HistoryTestR1;
+import tests.sprint05.HistoryTestR4;
 
 public class Main {
 
