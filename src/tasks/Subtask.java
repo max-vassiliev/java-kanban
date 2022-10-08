@@ -14,6 +14,23 @@ public class Subtask extends Task {
         this.relatedEpicId = relatedEpicId;
     }
 
+    // TODO проверить работу
+    public Subtask(String title, String description, String status,
+                   String relatedEpicTitle, String startTime, String duration) {
+        super(title, description, status, startTime, duration);
+        this.relatedEpicTitle = relatedEpicTitle;
+    }
+
+    // TODO проверить работу
+    public Subtask(String title, String description, String status,
+                   int relatedEpicId, String startTime, String duration) {
+        super(title, description, status, startTime, duration);
+        this.relatedEpicId = relatedEpicId;
+    }
+
+
+
+
     public String getRelatedEpicTitle() {
         return relatedEpicTitle;
     }
@@ -39,6 +56,8 @@ public class Subtask extends Task {
                 ", status=" + status +
                 ", relatedEpicTitle='" + relatedEpicTitle + '\'' +
                 ", relatedEpicId=" + relatedEpicId +
+                ", duration=" + duration + '\'' +
+                ", startTime=" + startTime + '\'' +
                 '}';
     }
 }

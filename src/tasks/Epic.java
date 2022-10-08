@@ -1,12 +1,13 @@
 package tasks;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     protected List<Integer> relatedSubtasks;
+    protected LocalDateTime endTime;            // TODO новое поле
 
-    // TODO добавить поле endTime;
 
     public Epic(String title, String description) {
         super(title, description);
@@ -14,6 +15,9 @@ public class Epic extends Task {
     }
 
     // TODO добавить расчет duration и getEndTime
+
+
+
 
     // добавить ID связанной подзадачи
     public void addRelatedSubtask(int subtaskId) {
@@ -33,6 +37,14 @@ public class Epic extends Task {
         this.relatedSubtasks = relatedSubtasks;
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
@@ -41,6 +53,9 @@ public class Epic extends Task {
                 ", description='" + description + '\'' +
                 ", status=" + status + '\'' +
                 ", relatedSubtasks=" + relatedSubtasks +
+                ", duration=" + duration + '\'' +
+                ", startTime=" + startTime + '\'' +
+                ", endTime=" + endTime + '\'' +
                 '}';
     }
 }

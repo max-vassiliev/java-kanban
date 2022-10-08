@@ -3,6 +3,7 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Predicate;
 
 public class Task {
     protected int id;
@@ -12,8 +13,9 @@ public class Task {
     protected TaskType type;
     protected LocalDateTime startTime;
     protected Duration duration;
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
-    public static final int MINUTES_IN_HOUR = 60;
+    protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    protected static final int MINUTES_IN_HOUR = 60;
+
 
     public Task(String title, String description) {
         this.title = title;
@@ -39,8 +41,8 @@ public class Task {
     }
 
     // рассчитать время завершения задачи
-    public LocalDateTime getEndTime(LocalDateTime startTime, Duration duration) {
-        return startTime.plusMinutes(duration.toMinutes());
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration.toMinutes()); // TODO здесь нужен Optional
     }
 
     public int getId() {
@@ -110,7 +112,6 @@ public class Task {
                 ", status=" + status + '\'' +
                 ", duration=" + duration + '\'' +
                 ", startTime=" + startTime + '\'' +
-                ", endTime=" + getEndTime(startTime, duration) + '\'' +
                 '}';
     }
 }

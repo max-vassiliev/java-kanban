@@ -73,10 +73,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         FileBackedTaskManager taskManager = loadFromFile(new File(HOME, backupFileSprint07));
 
-        Task task1 = TestSprint07Round01.createTask1();
-        taskManager.add(task1);
+        Task task1 = TestSprint07Round01.createTask1(); // 15 октября
+        Task task2 = TestSprint07Round01.createTask2(); // 15 ноября
+        Task task3 = TestSprint07Round01.createTask3(); // 12 октября
+        Task task4 = TestSprint07Round01.createTask4(); // без даты
 
-        System.out.println(task1);
+        Epic epic1 = TestSprint07Round01.createEpic1();
+        Subtask epic1Subtask1 = TestSprint07Round01.createEpic1Subtask1();
+        Subtask epic1Subtask2 = TestSprint07Round01.createEpic1Subtask2();
+        Subtask epic1Subtask3 = TestSprint07Round01.createEpic1Subtask3();
+
+        taskManager.add(task1);
+        taskManager.add(task2);
+        taskManager.add(task3);
+        taskManager.add(task4);
+        taskManager.add(epic1);
+        taskManager.add(epic1Subtask1);
+        taskManager.add(epic1Subtask2);
+        taskManager.add(epic1Subtask3);
+
+        System.out.println(taskManager.isOverlap(task1));
+        System.out.println("\n");
+        System.out.println(epic1);
+        System.out.println("\n");
+        System.out.println(taskManager.getPrioritizedTasks());
+
 
     }
 
