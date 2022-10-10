@@ -11,6 +11,7 @@ public class Subtask extends Task {
 
     public Subtask(String title, String description, String status, String relatedEpicTitle) {
         super(title, description, status);
+        this.type = TaskType.SUBTASK;           // TODO проверить, если нужно
         this.epicTitle = relatedEpicTitle;
     }
 

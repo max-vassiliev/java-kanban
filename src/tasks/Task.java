@@ -3,20 +3,18 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;                           // TODO не используется
 import java.util.Optional;
-import java.util.function.Predicate;                // TODO не используется
 
 public class Task {
     protected Integer id;
     protected String title;
     protected String description;
     protected Status status;
-    protected TaskType type;
+    protected TaskType type = TaskType.TASK;  // TODO проверить правильно
     protected LocalDateTime startTime;
     protected Duration duration;
-    protected LocalDateTime backupStartTime;        // TODO проверить нужность
-    protected Duration backupDuration;              // TODO проверить нужность
+    protected LocalDateTime backupStartTime;
+    protected Duration backupDuration;
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
     protected static final int MINUTES_IN_HOUR = 60;

@@ -229,6 +229,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return history;
     }
 
+    // TODO попробовать то же самое через дженерик — объединить с Duration
     // восстановить время начала
     public LocalDateTime parseStartTime(String str) {
         if (str.equals("null")) {

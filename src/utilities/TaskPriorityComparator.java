@@ -3,7 +3,6 @@ package utilities;
 import tasks.Task;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 public class TaskPriorityComparator implements Comparator<Task> {
 
@@ -13,7 +12,6 @@ public class TaskPriorityComparator implements Comparator<Task> {
             return 0;
         } else if (task1.getStartTime() == null && task2.getStartTime() == null) {
             return +1;
-//            return Integer.compare(task1.getId(), task2.getId());
         } else if (task1.getStartTime() == null) {
             return 1;
         } else if (task2.getStartTime() == null) {
