@@ -1,6 +1,7 @@
 package tasks;
 
 import managers.InMemoryTaskManager;
+import managers.TaskManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
 
-    private static InMemoryTaskManager taskManager;
+    private static TaskManager taskManager;
 
     private static Epic epic;
     private static Subtask subtask1;

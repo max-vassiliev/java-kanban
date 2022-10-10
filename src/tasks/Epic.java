@@ -15,7 +15,6 @@ public class Epic extends Task {
 
     public Epic(String title, String description) {
         super(title, description);
-        this.type = TaskType.EPIC;              //TODO проверить, если нужно
         relatedSubtasks = new ArrayList<>();
     }
 

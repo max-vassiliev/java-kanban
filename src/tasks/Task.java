@@ -10,7 +10,7 @@ public class Task {
     protected String title;
     protected String description;
     protected Status status;
-    protected TaskType type = TaskType.TASK;  // TODO проверить правильно
+    protected TaskType type;
     protected LocalDateTime startTime;
     protected Duration duration;
     protected LocalDateTime backupStartTime;
