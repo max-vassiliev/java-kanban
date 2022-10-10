@@ -33,7 +33,6 @@ public class Task {
         this.status = Status.valueOf(statusIn);
     }
 
-    // TODO проверить
     // конструктор для считывания из файла
     public Task(String title, String statusIn, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
@@ -41,15 +40,17 @@ public class Task {
         this.description = description;
         this.startTime = startTime;
         this.duration = duration;
+        this.backupStartTime = startTime;
+        this.backupDuration = duration;
     }
 
     public Task(String title, String description, String statusIn, String startTime, String duration) {
         this.title = title;
         this.description = description;
         this.status = Status.valueOf(statusIn);
-        this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER); // TODO искл - неверный формат ?
+        this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
 
-        String[] durationSplit = duration.split(":"); // TODO искл - неверный формат ?
+        String[] durationSplit = duration.split(":");
         int durationHours = Integer.parseInt(durationSplit[0]);
         int durationMinutes = Integer.parseInt(durationSplit[1]);
         this.duration = Duration.ofMinutes((long) durationHours * MINUTES_IN_HOUR + durationMinutes);
@@ -57,7 +58,7 @@ public class Task {
 
     // рассчитать время завершения задачи
     public Optional<LocalDateTime> getEndTime() {
-        return Optional.of(startTime.plusMinutes(duration.toMinutes())); // TODO здесь нужен Optional
+        return Optional.of(startTime.plusMinutes(duration.toMinutes()));
     }
 
     public int getId() {
@@ -132,7 +133,6 @@ public class Task {
         this.backupDuration = backupDuration;
     }
 
-    // TODO проверить работу
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -141,13 +141,11 @@ public class Task {
         return id.equals(task.id);
     }
 
-    // TODO проверить
     @Override
     public int hashCode() {
         return id.hashCode();
     }
 
-    // TODO возможно переписать — с учетом duration и startTime
     @Override
     public String toString() {
         return "Task{" +

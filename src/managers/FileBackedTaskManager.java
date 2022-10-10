@@ -129,10 +129,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         // РАУНД 4
 
-        Subtask epic1Subtask2 = taskManager.getSubtask(7);
-        Subtask epic1Subtask2Update = TestSprint07Round01.updateEpic1Subtask2(epic1Subtask2);
-        taskManager.update(epic1Subtask2Update);
+//        Subtask epic1Subtask2 = taskManager.getSubtask(7);
+//        Subtask epic1Subtask2Update = TestSprint07Round01.updateEpic1Subtask2(epic1Subtask2);
+//        taskManager.update(epic1Subtask2Update);
+//        System.out.println(taskManager.getPrioritizedTasks());
+
+        // РАУНД 5
+
+        Task task2 = taskManager.getTask(2);
+        taskManager.delete(task2);
         System.out.println(taskManager.getPrioritizedTasks());
+
     }
 
 
@@ -172,8 +179,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = new Task(data[2], data[3], data[4], startTime, duration);
                 task.setId(id);
                 task.setType(type);
-                task.setBackupStartTime(startTime);
-                task.setBackupDuration(duration);
                 tasks.put(id, task);
                 prioritizedTasks.add(task);
                 taskFromString = task;
@@ -182,8 +187,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Epic epic = new Epic(data[2], data[3], data[4], startTime, duration);
                 epic.setId(id);
                 epic.setType(type);
-                epic.setBackupStartTime(startTime);
-                epic.setBackupDuration(duration);
                 epics.put(id, epic);
                 taskFromString = epic;
                 break;
@@ -196,8 +199,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                                               startTime, duration, isEpicStartTime, isEpicEndTime);
                 subtask.setId(id);
                 subtask.setType(type);
-                subtask.setBackupStartTime(startTime);
-                subtask.setBackupDuration(duration);
                 relatedEpic.addRelatedSubtask(id);
                 setEpicTiming(relatedEpic, subtask);
                 if (isEpicStartTime) relatedEpic.setStartTimeSubtask(subtask.getId());

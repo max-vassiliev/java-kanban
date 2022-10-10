@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 public class Subtask extends Task {
     protected String epicTitle;
     protected int epicId;
-    protected boolean epicStartTime = false;         // TODO проверить нужность
-    protected boolean epicEndTime = false;           // TODO проверить нужность
+    protected boolean epicStartTime = false;
+    protected boolean epicEndTime = false;
 
     public Subtask(String title, String description, String status, String relatedEpicTitle) {
         super(title, description, status);
@@ -25,20 +25,7 @@ public class Subtask extends Task {
         this.epicTitle = relatedEpicTitle;
     }
 
-    public Subtask(String title, String description, String status,
-                   int relatedEpicId, String startTime, String duration) {
-        super(title, description, status, startTime, duration);
-        this.epicId = relatedEpicId;
-    }
-
-    // TODO возможно, убрать коснтруктор
-    public Subtask(String title, String status, String description,
-                   int relatedEpicId, LocalDateTime startTime, Duration duration) {
-        super(title, status, description, startTime, duration);
-        this.epicId = relatedEpicId;
-    }
-
-    //TODO проверить
+    // конструктор для чтения из файла
     public Subtask(String title, String status, String description, int relatedEpicId,
                    LocalDateTime startTime, Duration duration, boolean epicStartTime, boolean epicEndTime) {
         super(title, status, description, startTime, duration);
@@ -78,21 +65,6 @@ public class Subtask extends Task {
     public void setEpicEndTime(boolean epicEndTime) {
         this.epicEndTime = epicEndTime;
     }
-
-    // TODO проверить работу
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Task task = (Task) o;
-//        return id.equals(task.id);
-//    }
-//
-//    // TODO проверить
-//    @Override
-//    public int hashCode() {
-//        return id.hashCode();
-//    }
 
     @Override
     public String toString() {

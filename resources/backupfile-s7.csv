@@ -1,6 +1,5 @@
 id,type,name,status,description,starttime,duration,epic,epicStartTime,epicEndTime
 1,TASK,Task1,NEW,Description task1,2022-10-15T13:45,PT1H,
-2,TASK,Task2,NEW,Description task2,2022-11-15T14:00,PT45M,
 3,TASK,Task3,NEW,Description task3,null,null,
 4,TASK,Task4,NEW,Description task4,null,null,
 5,EPIC,Epic 1,IN_PROGRESS,Description epic1,2022-10-17T10:00,PT49H15M,
@@ -8,4 +7,4 @@ id,type,name,status,description,starttime,duration,epic,epicStartTime,epicEndTim
 7,SUBTASK,Epic1 SubTask2,IN_PROGRESS,Description epic1 subTask2,2022-10-19T10:00,PT1H15M,5,false,true
 8,SUBTASK,Epic1 SubTask3,IN_PROGRESS,Description epic1 subTask3,2022-10-17T10:00,PT1H15M,5,true,false
 
-2,5,6,8,7
+5,6,8,7

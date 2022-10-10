@@ -10,25 +10,19 @@ public class Epic extends Task {
     protected List<Integer> relatedSubtasks;
     protected LocalDateTime endTime;
 
-    protected int startTimeSubtask;         //TODO проверить поле
-    protected int endTimeSubtask;           //TODO проверить поле
+    protected int startTimeSubtask;
+    protected int endTimeSubtask;
 
     public Epic(String title, String description) {
         super(title, description);
         relatedSubtasks = new ArrayList<>();
     }
 
-    // TODO проверить
     // конструктор для считывания из файла
     public Epic(String title, String statusIn, String description, LocalDateTime startTime, Duration duration) {
         super(title, statusIn, description, startTime, duration);
-        relatedSubtasks = new ArrayList<>(); // TODO проверить
+        relatedSubtasks = new ArrayList<>();
     }
-
-    // TODO добавить расчет duration и getEndTime
-
-
-
 
     // добавить ID связанной подзадачи
     public void addRelatedSubtask(int subtaskId) {
@@ -40,6 +34,10 @@ public class Epic extends Task {
         relatedSubtasks.remove(subtaskId);
     }
 
+    // удалить ID всех подзадач
+    public void removeAllRelatedSubtasks() {
+        relatedSubtasks.clear();
+    }
     public List<Integer> getRelatedSubtasks() {
         return relatedSubtasks;
     }
