@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String ITEM_SEPARATOR = ",";
     private static final String LINE_SEPARATOR = "\n";
     private static final String SECTION_SEPARATOR = "\n\n";
-    private static final String BACKUP_FILE_HEADING = "id,type,name,status,description,epic\n";
+    private static final String BACKUP_FILE_HEADING = "id,type,name,status,description,starttime," +
+                                                      "duration,epic,epicStartTime,epicEndTime\n";
     private final String historyPath;
 
 
@@ -69,36 +72,67 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
 
-        String backupFileSprint07 = "backup-sprint7.csv";
+        String backupFileSprint07 = "backupfile-s7.csv";
 
         FileBackedTaskManager taskManager = loadFromFile(new File(HOME, backupFileSprint07));
 
-        Task task1 = TestSprint07Round01.createTask1(); // 15 октября
-        Task task2 = TestSprint07Round01.createTask2(); // 15 ноября
-        Task task3 = TestSprint07Round01.createTask3(); // 12 октября
-        Task task4 = TestSprint07Round01.createTask4(); // без даты
+        // РАУНД 1
 
-        Epic epic1 = TestSprint07Round01.createEpic1();
-        Subtask epic1Subtask1 = TestSprint07Round01.createEpic1Subtask1();
-        Subtask epic1Subtask2 = TestSprint07Round01.createEpic1Subtask2();
-        Subtask epic1Subtask3 = TestSprint07Round01.createEpic1Subtask3();
+//        Task task1 = TestSprint07Round01.createTask1(); // 15 октября
+//        Task task2 = TestSprint07Round01.createTask2(); // 15 октября (пересечение)
+//        Task task3 = TestSprint07Round01.createTask3(); // 12 октября
+//        Task task4 = TestSprint07Round01.createTask4(); // без даты
+//
+//        Epic epic1 = TestSprint07Round01.createEpic1();
+//        Subtask epic1Subtask1 = TestSprint07Round01.createEpic1Subtask1();
+//        Subtask epic1Subtask2 = TestSprint07Round01.createEpic1Subtask2();
+//        Subtask epic1Subtask3 = TestSprint07Round01.createEpic1Subtask3();
+//
+//        taskManager.add(task1);
+//        taskManager.add(task2);
+//        taskManager.add(task3);
+//        taskManager.add(task4);
+//        taskManager.add(epic1);
+//        taskManager.add(epic1Subtask1);
+//        taskManager.add(epic1Subtask2);
+//        taskManager.add(epic1Subtask3);
+//
+//        System.out.println(taskManager.isOverlap(task1));
+//        System.out.println("\n");
+//        System.out.println(epic1);
+//        System.out.println("\n");
+//        System.out.println(taskManager.getPrioritizedTasks());
 
-        taskManager.add(task1);
-        taskManager.add(task2);
-        taskManager.add(task3);
-        taskManager.add(task4);
-        taskManager.add(epic1);
-        taskManager.add(epic1Subtask1);
-        taskManager.add(epic1Subtask2);
-        taskManager.add(epic1Subtask3);
 
-        System.out.println(taskManager.isOverlap(task1));
-        System.out.println("\n");
-        System.out.println(epic1);
-        System.out.println("\n");
+        // РАУНД 2
+
+//        Task task2 = taskManager.getTask(2);
+//        Epic epic1 = taskManager.getEpic(5);
+//        Subtask epic1Subtask1 = taskManager.getSubtask(6);
+//
+//        Task task2update = TestSprint07Round01.updateTask2(task2);
+//        taskManager.update(task2update);
+//
+//        Subtask epic1Subtask1Update = TestSprint07Round01.updateEpic1Subtask1(epic1Subtask1);
+//        taskManager.update(epic1Subtask1Update);
+//
+//        System.out.println(epic1);
+//        System.out.println();
+//        System.out.println(taskManager.getPrioritizedTasks());
+
+        // РАУНД 3
+
+//        Subtask epic1Subtask3 = taskManager.getSubtask(8);
+//        Subtask epic1Subtask3Update = TestSprint07Round01.updateEpic1Subtask3(epic1Subtask3);
+//        taskManager.update(epic1Subtask3Update);
+//        System.out.println(taskManager.getPrioritizedTasks());
+
+        // РАУНД 4
+
+        Subtask epic1Subtask2 = taskManager.getSubtask(7);
+        Subtask epic1Subtask2Update = TestSprint07Round01.updateEpic1Subtask2(epic1Subtask2);
+        taskManager.update(epic1Subtask2Update);
         System.out.println(taskManager.getPrioritizedTasks());
-
-
     }
 
 
@@ -123,36 +157,53 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    // TODO - обновить с учетом полей startTime и duration
     // создать задачу из строки
     private Task fromString(String taskRow) throws IOException {
         Task taskFromString;
         String[] data = taskRow.split(ITEM_SEPARATOR);
         int id = Integer.parseInt(data[0]);
         TaskType type = TaskType.valueOf(data[1]);
+        LocalDateTime startTime = parseStartTime(data[5]);
+        Duration duration = parseDuration(data[6]);
 
         super.checkNextId(id);
         switch (type) {
             case TASK:
-                Task task = new Task(data[2], data[4], data[3]);
+                Task task = new Task(data[2], data[3], data[4], startTime, duration);
                 task.setId(id);
                 task.setType(type);
+                task.setBackupStartTime(startTime);
+                task.setBackupDuration(duration);
                 tasks.put(id, task);
+                prioritizedTasks.add(task);
                 taskFromString = task;
                 break;
             case EPIC:
-                Epic epic = new Epic(data[2], data[4]);
+                Epic epic = new Epic(data[2], data[3], data[4], startTime, duration);
                 epic.setId(id);
                 epic.setType(type);
+                epic.setBackupStartTime(startTime);
+                epic.setBackupDuration(duration);
                 epics.put(id, epic);
                 taskFromString = epic;
                 break;
             case SUBTASK:
-                int epicId = Integer.parseInt(data[5]);
-                Subtask subtask = new Subtask(data[2], data[4], data[3], epicId);
+                int epicId = Integer.parseInt(data[7]);
+                boolean isEpicStartTime = Boolean.parseBoolean(data[8]);
+                boolean isEpicEndTime = Boolean.parseBoolean(data[9]);
+                Epic relatedEpic = epics.get(epicId);
+                Subtask subtask = new Subtask(data[2], data[3], data[4], epicId,
+                                              startTime, duration, isEpicStartTime, isEpicEndTime);
                 subtask.setId(id);
                 subtask.setType(type);
+                subtask.setBackupStartTime(startTime);
+                subtask.setBackupDuration(duration);
+                relatedEpic.addRelatedSubtask(id);
+                setEpicTiming(relatedEpic, subtask);
+                if (isEpicStartTime) relatedEpic.setStartTimeSubtask(subtask.getId());
+                if (isEpicEndTime) relatedEpic.setEndTimeSubtask(subtask.getId());
                 subtasks.put(id, subtask);
+                prioritizedTasks.add(subtask);
                 taskFromString = subtask;
                 break;
             default:
@@ -177,21 +228,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return history;
     }
 
-    // получить список ID задач в менеджере истории
-    static String historyToString(HistoryManager manager) {
-        List<Task> history = manager.getHistory();
-        StringBuilder sb = new StringBuilder();
-
-        if (history.isEmpty()) {
-            return "";
+    // восстановить время начала
+    public LocalDateTime parseStartTime(String str) {
+        if (str.equals("null")) {
+            return null;
+        } else {
+            return LocalDateTime.parse(str);
         }
-        for (Task task : history) {
-            sb.append(task.getId()).append(ITEM_SEPARATOR);
-        }
-        sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
     }
 
+    // восстановить продолжительность
+    public Duration parseDuration(String str) {
+        if (str.equals("null")) {
+            return null;
+        } else {
+            return Duration.parse(str);
+        }
+    }
 
     // ЗАПИСЬ В ФАЙЛ
 
@@ -217,16 +270,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         switch (task.getType()) {
             case TASK:
             case EPIC:
-                result = String.format("%s,".repeat(5),
+                result = String.format("%s,".repeat(7),
                         task.getId(), task.getType(), task.getTitle(),
-                        task.getStatus(), task.getDescription());
+                        task.getStatus(), task.getDescription(),
+                        task.getStartTime(), task.getDuration());
                 break;
             case SUBTASK:
                 Subtask subtask = (Subtask) task;
-                result = String.format("%s,".repeat(5) + "%s",
+                result = String.format("%s,".repeat(9) + "%s",
                         subtask.getId(), subtask.getType(), subtask.getTitle(),
                         subtask.getStatus(), subtask.getDescription(),
-                        subtask.getRelatedEpicId());
+                        subtask.getStartTime(), subtask.getDuration(),
+                        subtask.getEpicId(), subtask.isEpicStartTime(), subtask.isEpicEndTime());
                 break;
             default:
                 result = null;
@@ -235,6 +290,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return result;
     }
 
+    // получить список ID задач в менеджере истории
+    static String historyToString(HistoryManager manager) {
+        List<Task> history = manager.getHistory();
+        StringBuilder sb = new StringBuilder();
+
+        if (history.isEmpty()) {
+            return "";
+        }
+        for (Task task : history) {
+            sb.append(task.getId()).append(ITEM_SEPARATOR);
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
 
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 

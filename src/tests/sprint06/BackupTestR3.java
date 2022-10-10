@@ -11,7 +11,7 @@ public class BackupTestR3 {
                 "Epic1");
 
         update.setId(subtask.getId());
-        update.setRelatedEpicId(subtask.getRelatedEpicId());
+        update.setEpicId(subtask.getEpicId());
         update.setType(subtask.getType());
         return update;
     }
@@ -23,7 +23,7 @@ public class BackupTestR3 {
                 "Epic2");
 
         update.setId(subtask.getId());
-        update.setRelatedEpicId(subtask.getRelatedEpicId());
+        update.setEpicId(subtask.getEpicId());
         update.setType(subtask.getType());
         return update;
     }

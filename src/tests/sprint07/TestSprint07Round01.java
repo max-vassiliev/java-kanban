@@ -19,7 +19,7 @@ public class TestSprint07Round01 {
         return new Task("Task2",
                 "Description task2",
                 "NEW",
-                "15.11.2022, 15:00",
+                "15.10.2022, 14:00",        // TODO вернуть на ноябрь
                 "00:45"
         );
     }
@@ -76,4 +76,75 @@ public class TestSprint07Round01 {
         );
     }
 
+    public static Task updateTask2(Task task) {
+        Task update = new Task("Task2",
+                "Description task2",
+                "NEW",
+                "15.11.2022, 14:00",        // TODO меняем на ноябрь
+                "00:45"
+        );
+
+        update.setId(task.getId());
+        update.setType(task.getType());
+        update.setBackupStartTime(task.getBackupStartTime());
+        update.setBackupDuration(task.getBackupDuration());
+        return update;
+    }
+
+    public static Subtask updateEpic1Subtask1(Subtask subtask) {
+        Subtask update = new Subtask("Epic1 SubTask1",
+                "Description epic1 subTask1",
+                "IN_PROGRESS",              // TODO поменяли статус
+                "Epic1",
+                "18.10.2022, 14:00",      // TODO сдвинули на день раньше
+                "01:15"
+        );
+
+        update.setId(subtask.getId());
+        update.setEpicId(subtask.getEpicId());
+        update.setType(subtask.getType());
+        update.setBackupStartTime(subtask.getBackupStartTime());
+        update.setBackupDuration(subtask.getBackupDuration());
+        update.setEpicStartTime(subtask.isEpicStartTime());
+        update.setEpicEndTime(subtask.isEpicEndTime());
+        return update;
+    }
+
+    public static Subtask updateEpic1Subtask3(Subtask subtask) {
+        Subtask update = new Subtask("Epic1 SubTask3",
+                "Description epic1 subTask3",
+                "IN_PROGRESS",              // TODO поменяли статус
+                "Epic1",
+                "17.10.2022, 10:00",      // TODO сдвинули на день раньше
+                "01:15"
+        );
+
+        update.setId(subtask.getId());
+        update.setEpicId(subtask.getEpicId());
+        update.setType(subtask.getType());
+        update.setBackupStartTime(subtask.getBackupStartTime());
+        update.setBackupDuration(subtask.getBackupDuration());
+        update.setEpicStartTime(subtask.isEpicStartTime());
+        update.setEpicEndTime(subtask.isEpicEndTime());
+        return update;
+    }
+
+    public static Subtask updateEpic1Subtask2(Subtask subtask) {
+        Subtask update = new Subtask("Epic1 SubTask2",
+                "Description epic1 subTask2",
+                "IN_PROGRESS",              // TODO поменяли статус
+                "Epic1",
+                "19.10.2022, 10:00",      // TODO сдвинули на день раньше
+                "01:15"
+        );
+
+        update.setId(subtask.getId());
+        update.setEpicId(subtask.getEpicId());
+        update.setType(subtask.getType());
+        update.setBackupStartTime(subtask.getBackupStartTime());
+        update.setBackupDuration(subtask.getBackupDuration());
+        update.setEpicStartTime(subtask.isEpicStartTime());
+        update.setEpicEndTime(subtask.isEpicEndTime());
+        return update;
+    }
 }

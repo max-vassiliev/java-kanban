@@ -5,8 +5,6 @@ import utilities.TaskPriorityComparator;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer nextId = 1;
@@ -26,6 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         task.setId(id);
         task.setType(TaskType.TASK);
+        checkOverlap(task);
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
         return id;
@@ -50,10 +49,11 @@ public class InMemoryTaskManager implements TaskManager {
 
         subtask.setId(id);
         subtask.setType(TaskType.SUBTASK);
+        checkOverlap(subtask);                                         // TODO проверить
         setEpicSubtaskRelation(subtask);
         subtasks.put(subtask.getId(), subtask);
         prioritizedTasks.add(subtask);                                  // TODO проверить работу
-        Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
+        Epic relatedEpic = epics.get(subtask.getEpicId());
         checkEpicStatus(relatedEpic);
         return id;
     }
@@ -64,7 +64,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Task task) {
         tasks.put(task.getId(), task);
-        prioritizedTasks.add(task);                     //TODO проверить работу
+        checkOverlap(task);
+        updatePrioritizedTask(task);
     }
 
     // обновить эпик
@@ -77,9 +78,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
-        prioritizedTasks.add(subtask);                              //TODO проверить работу
-        Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
+        Epic relatedEpic = epics.get(subtask.getEpicId());
         checkEpicStatus(relatedEpic);
+        checkOverlap(subtask);
+//        setEpicTiming(relatedEpic, subtask);      // TODO удалить, если надо
+        updateEpicTiming(relatedEpic, subtask);
+        updatePrioritizedTask(subtask);
     }
 
     // ПОЛУЧИТЬ ЗАДАЧУ
@@ -164,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить подзадачу
     @Override
     public void delete(Subtask subtask) {                           // TODO придумать, как удалять из prioritizedTasks
-        Epic relatedEpic = epics.get(subtask.getRelatedEpicId());
+        Epic relatedEpic = epics.get(subtask.getEpicId());
         relatedEpic.removeRelatedSubtask(subtask.getId());
         checkEpicStatus(relatedEpic);
         historyManager.remove(subtask.getId());
@@ -263,18 +267,17 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // TODO добавить время
     // связать подзадачу с эпиком
-    private void setEpicSubtaskRelation(Subtask subtask) {
-        if (subtask.getRelatedEpicId() != 0) {
-            Epic epic = epics.get(subtask.getRelatedEpicId());
+    protected void setEpicSubtaskRelation(Subtask subtask) {
+        if (subtask.getEpicId() != 0) {
+            Epic epic = epics.get(subtask.getEpicId());
             epic.addRelatedSubtask(subtask.getId());
             return;
         }
         for (Integer epicId : epics.keySet()) {
             Epic epic = epics.get(epicId);
-            if (epic.getTitle().equals(subtask.getRelatedEpicTitle())) {
-                subtask.setRelatedEpicId(epicId);
+            if (epic.getTitle().equals(subtask.getEpicTitle())) {
+                subtask.setEpicId(epicId);
                 if (!epic.getRelatedSubtasks().contains(subtask.getId())) {
                     epic.addRelatedSubtask(subtask.getId());
                     setEpicTiming(epic, subtask);
@@ -285,32 +288,228 @@ public class InMemoryTaskManager implements TaskManager {
 
     // для эпика — рассчитать время начала, завершения и продолжительность
     protected void setEpicTiming(Epic epic, Subtask subtask) {
-        if (subtask.getStartTime() != null) {
-            if (epic.getStartTime() != null) {
-                if (subtask.getStartTime().isBefore(epic.getStartTime())) {
-                    epic.setStartTime(subtask.getStartTime());
-                }
-            } else {
-                epic.setStartTime(subtask.getStartTime());
+        if (subtask.getStartTime() == null) {
+            return;
+        }
+
+        // TODO возможно, упростить
+        // время начала
+        if (epic.getStartTime() == null ) {
+            epic.setStartTime(subtask.getStartTime());
+            epic.setStartTimeSubtask(subtask.getId());
+            subtask.setEpicStartTime(true);
+        } else if (subtask.getStartTime().isBefore(epic.getStartTime())) {
+            Subtask priorStartTimeSubtask = subtasks.get(epic.getStartTimeSubtask());
+            priorStartTimeSubtask.setEpicStartTime(false);
+            epic.setStartTime(subtask.getStartTime());
+            epic.setStartTimeSubtask(subtask.getId());
+            subtask.setEpicStartTime(true);
+        }
+
+        // TODO возможно, упростить
+        // время завершения
+        if (epic.getEndTime().isEmpty()) {
+            epic.setEndTime(subtask.getEndTime().get());
+            epic.setEndTimeSubtask(subtask.getId());
+            subtask.setEpicEndTime(true);
+        } else if (subtask.getEndTime().get().isAfter(epic.getEndTime().get())) {
+            Subtask priorEndTimeSubtask = subtasks.get(epic.getEndTimeSubtask());
+            priorEndTimeSubtask.setEpicEndTime(false);
+            epic.setEndTime(subtask.getEndTime().get());
+            epic.setEndTimeSubtask(subtask.getId());
+            subtask.setEpicEndTime(true);
+        }
+
+        // продолжительность
+        epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime().get()));
+    }
+
+
+    // TODO проверить и поменять название
+    // для эпика — обновить время начала, завершения и продолжительность
+    protected void updateEpicTiming(Epic epic, Subtask subtask) {
+        if (subtask.getStartTime() == null) {
+            return;
+        }
+        if (subtask.isEpicStartTime() && subtask.getStartTime().isBefore(epic.getStartTime())) {
+            epic.setStartTime(subtask.getStartTime());
+        } else if (subtask.isEpicEndTime() && subtask.getEndTime().get().isAfter(epic.getEndTime().get())) {
+            epic.setEndTime(subtask.getEndTime().get());
+        } else {
+            resetEpicStartEndTime(epic);
+        }
+        epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime().get()));
+    }
+
+    // TODO проверить и поменять название
+    // для эпика — переопределить первую и последнюю подзадачи, если меняется порядок
+    protected void resetEpicStartEndTime(Epic epic) {
+        List<Subtask> epicSubtasks = new ArrayList<>();
+        Subtask oldStartTimeSubtask = subtasks.get(epic.getStartTimeSubtask());
+        Subtask oldEndTimeSubtask = subtasks.get(epic.getEndTimeSubtask());
+
+        oldStartTimeSubtask.setEpicStartTime(false);
+        oldEndTimeSubtask.setEpicEndTime(false);
+
+        for (int subtaskId : epic.getRelatedSubtasks()) {
+            epicSubtasks.add(subtasks.get(subtaskId));
+        }
+        epicSubtasks.sort(new TaskPriorityComparator());
+
+        Subtask newStartTimeSubtask = epicSubtasks.get(0);
+        Subtask newEndTimeSubtask = epicSubtasks.get(epicSubtasks.size() - 1);
+
+        int i = epicSubtasks.size() - 1;
+        while (i >= 0 && newEndTimeSubtask.getStartTime() == null) {
+            newEndTimeSubtask = epicSubtasks.get(i - 1);
+            i--;
+        }
+
+        newStartTimeSubtask.setEpicStartTime(true);
+        newEndTimeSubtask.setEpicEndTime(true);
+        epic.setStartTimeSubtask(newStartTimeSubtask.getId());
+        epic.setEndTimeSubtask(newEndTimeSubtask.getId());
+        epic.setStartTime(newStartTimeSubtask.getStartTime());
+        epic.setEndTime(newEndTimeSubtask.getEndTime().get());
+    }
+
+
+    // проверить задачи на пересечения
+    protected void checkOverlap(Task task) {
+        if (task.getStartTime() == null) {
+            return;
+        }
+        boolean noOverlap = true;
+
+        for (Task taskToCheck : prioritizedTasks) {
+            if (isOverlap(task, taskToCheck)) {
+                System.out.println("Не удалось сохранить время для задачи '" + task.getTitle() +
+                                    "' — пересечение по времени с задачей '" + taskToCheck.getTitle() + "'" +
+                                    ". Выберите другое время." +
+                                    "\n\n" + task.getTitle() +
+                                    "\nНачало: " + task.getStartTime().format(Task.DATE_TIME_FORMATTER) +
+                                    "\nЗавершение: " + task.getEndTime().get().format(Task.DATE_TIME_FORMATTER) +
+                                    "\n" + taskToCheck.getTitle() +
+                                    "\nНачало: " + taskToCheck.getStartTime().format(Task.DATE_TIME_FORMATTER) +
+                                    "\nЗавершение: " + taskToCheck.getEndTime().get()
+                                                            .format(Task.DATE_TIME_FORMATTER) + "\n"
+                );
+                task.setStartTime(task.getBackupStartTime());
+                task.setDuration(task.getBackupDuration());
+                noOverlap = false;
             }
-            if (epic.getEndTime() != null) {
-                if (subtask.getEndTime().isAfter(epic.getEndTime())) {
-                    epic.setEndTime(subtask.getEndTime());
-                }
-            } else {
-                epic.setEndTime(subtask.getEndTime());
-            }
-            epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
+        }
+        if (noOverlap) {
+            task.setBackupStartTime(task.getStartTime());
+            task.setBackupDuration(task.getDuration());
         }
     }
 
-    // TODO сделать protected или private
-    // проверить пересечения задач по времени
-    public boolean isOverlap(Task task) {
-        List<Task> tasks = new ArrayList<>(prioritizedTasks);
-        return tasks.stream()
-                    .anyMatch(t -> t.getStartTime().equals(task.getStartTime()) ||
-                             (t.getStartTime().isBefore(task.getStartTime()) &&
-                              t.getEndTime().isAfter(task.getStartTime())));
+    // условия для определения пересечения по времени
+    private boolean isOverlap(Task task1, Task task2) {
+        if (task1.getStartTime() == null || task2.getStartTime() == null || task1.equals(task2)) {
+            return false;
+        }
+        return // задачи начинаются в одно время
+               (task1.getStartTime().equals(task2.getStartTime()) ||
+                // task1 начинается, пока не завершилась task2
+               (task1.getStartTime().isAfter(task2.getStartTime()) &&
+                task1.getStartTime().isBefore(task2.getEndTime().get())) ||
+                // task2 начинается, пока не завершилась task1
+               (task2.getStartTime().isAfter(task1.getStartTime()) &&
+                task2.getStartTime().isBefore(task1.getEndTime().get()))
+        );
+    }
+
+    // обновить задачу в списке приоритетных задач
+    protected void updatePrioritizedTask(Task task) {
+        if (prioritizedTasks.contains(task)) {
+            prioritizedTasks.remove(task);
+            checkOverlap(task);
+            prioritizedTasks.add(task);
+        }
     }
 }
+
+
+//
+//    // TODO удалить, если не нужно
+//    void updatePrioritizedSubtask(Subtask subtask) {
+//        LocalDateTime oldStartTime = null;
+//        for (Task task : prioritizedTasks) {
+//            if (task.equals((Task) subtask)) {         //  TODO проверить — может, убрать приведение
+//                oldStartTime = task.getStartTime();
+//            }
+//        }
+//        for (Task taskToCheck : prioritizedTasks) {
+//            if (isOverlap5(subtask, taskToCheck)) {
+//                System.out.println("Пересечение по времени между задачами '" + subtask.getTitle() +
+//                        "' и '" + taskToCheck.getTitle() + "'" +
+//                        "\nВыберите другое время." +
+//                        "\n\n" + subtask.getTitle() +
+//                        "\nВремя начала: " + subtask.getStartTime().format(Task.DATE_TIME_FORMATTER) +
+//                        "\nВремя завершения: " + subtask.getEndTime().get().format(Task.DATE_TIME_FORMATTER) +
+//                        "\n\n" + taskToCheck.getTitle() +
+//                        "\nВремя начала: " + taskToCheck.getStartTime().format(Task.DATE_TIME_FORMATTER) +
+//                        "\nВремя завершения: " + taskToCheck.getEndTime().get().format(Task.DATE_TIME_FORMATTER)
+//                );
+//                subtask.setStartTime(oldStartTime);
+//                return;
+//            }
+//        }
+//        prioritizedTasks.remove(subtask);
+//        prioritizedTasks.add(subtask);
+//
+//    }
+
+//
+//
+//    // TODO удалить этот или предыдущие
+//    public void checkOverlap(Task task) {
+//        List<Task> tasks = new ArrayList<>(prioritizedTasks);
+//
+//        Optional<Task> taskOverlap = tasks.stream()
+//                .filter(t -> t.getStartTime().equals(task.getStartTime()) ||
+//                        (t.getStartTime().isBefore(task.getStartTime()) &&
+//                                t.getEndTime().get().isAfter(task.getStartTime())))
+//                .findFirst();
+//
+//        if (taskOverlap.isPresent()) {
+//            System.out.println("Не удалось сохранить время для задачи '" + task.getTitle() +
+//                    "'. Это время уже занято задачей '" + taskOverlap.get().getTitle() + "'" +
+//                    "\nВыберите другое время." +
+//                    "\nВаш запрос: " +
+//                    "\n\n" + task.getTitle() +
+//                    "\nВремя начала: " + task.getStartTime().format(Task.DATE_TIME_FORMATTER) +
+//                    "\nВремя завершения: " + task.getEndTime().get().format(Task.DATE_TIME_FORMATTER) +
+//                    "\n\n Пересечение с задачей '" + taskOverlap.get().getTitle() + "'" +
+//                    "\nВремя начала: " + taskOverlap.get()
+//                    .getStartTime().format(Task.DATE_TIME_FORMATTER) +
+//                    "\nВремя завершения: " + taskOverlap.get()
+//                    .getEndTime().get().format(Task.DATE_TIME_FORMATTER)
+//            );
+//            task.setStartTime(null);
+//        }
+//    }
+
+
+//    // TODO удалить этот или предыдущий
+//    public Optional<Task> isOverlap2(Task task) {
+//        List<Task> tasks = new ArrayList<>(prioritizedTasks);
+//        return tasks.stream()
+//                .filter(t -> t.getStartTime().equals(task.getStartTime()) ||
+//                        (t.getStartTime().isBefore(task.getStartTime()) &&
+//                                t.getEndTime().get().isAfter(task.getStartTime())))
+//                .findFirst();
+//    }
+
+
+    // TODO сделать protected или private
+    // проверить пересечения задач по времени
+//    public boolean isOverlap6(Task task) {
+//        List<Task> tasks = new ArrayList<>(prioritizedTasks);
+//        return tasks.stream()
+//                .anyMatch(t -> t.getStartTime().equals(task.getStartTime()) ||
+//                        (t.getStartTime().isBefore(task.getStartTime()) &&
+//                                t.getEndTime().get().isAfter(task.getStartTime())));
+//    }
