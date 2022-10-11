@@ -31,4 +31,49 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
     public void addEpicWithSubtasks() {
         super.addEpicWithSubtasks();
     }
+
+    @Test @Override
+    public void updateTask() {
+        super.updateTask();
+    }
+
+    @Test @Override
+    public void updateEpic() {
+        super.updateEpic();
+    }
+
+    @Test @Override
+    public void updateSubtask() {
+        super.updateSubtask();
+    }
+
+    @Test @Override
+    public void deleteTask() {
+        super.deleteTask();
+    }
+
+    @Test @Override
+    public void deleteEpic() {
+        super.deleteEpic();
+    }
+
+    @Test @Override
+    public void deleteSubtask() {
+        super.deleteSubtask();
+    }
+
+    @Test @Override
+    public void deleteAllTasks() {
+        super.deleteAllTasks();
+    }
+
+    @Test @Override
+    public void deleteAllEpics() {
+        super.deleteAllEpics();
+    }
+
+    @Test @Override
+    public void deleteAllSubtasks() {
+        super.deleteAllSubtasks();
+    }
 }

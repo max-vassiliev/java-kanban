@@ -180,7 +180,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     // удалить все задачи
     @Override
-    public void deleteAllTasks(){
+    public void deleteAllTasks() {
         for (int id : tasks.keySet()) {
             historyManager.remove(id);
             prioritizedTasks.remove(tasks.get(id));
@@ -340,6 +340,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     // для эпика — переопределить первую и последнюю подзадачи, если меняется порядок
     protected void resetEpicStartEndTime(Epic epic) {
+        if (epic.getStartTime() == null || epic.getEndTime().isEmpty()) {
+            return;
+        }
+
         List<Subtask> epicSubtasks = new ArrayList<>();
         Subtask oldStartTimeSubtask = subtasks.get(epic.getStartTimeSubtask());
         Subtask oldEndTimeSubtask = subtasks.get(epic.getEndTimeSubtask());
