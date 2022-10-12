@@ -20,6 +20,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static final String HOME = "resources";
+    private static final String BACKUP_FILE = "backup-s7.csv";
     private static final String ITEM_SEPARATOR = ",";
     private static final String LINE_SEPARATOR = "\n";
     private static final String SECTION_SEPARATOR = "\n\n";
@@ -71,75 +72,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
 
-        String backupFileSprint07 = "backupfile-s7.csv";
-
-        FileBackedTaskManager taskManager = loadFromFile(new File(HOME, backupFileSprint07));
-
-        // РАУНД 1
-
-//        Task task1 = TestSprint07Round01.createTask1(); // 15 октября
-//        Task task2 = TestSprint07Round01.createTask2S7(); // 15 октября (пересечение)
-//        Task task3 = TestSprint07Round01.createTask3S7(); // 12 октября
-//        Task task4 = TestSprint07Round01.createTask4S7(); // без даты
-//
-//        Epic epic1 = TestSprint07Round01.createEpic1S7();
-//        Subtask epic1Subtask1 = TestSprint07Round01.createEpic1Subtask1();
-//        Subtask epic1Subtask2 = TestSprint07Round01.createEpic1Subtask2();
-//        Subtask epic1Subtask3 = TestSprint07Round01.createEpic1Subtask3();
-//
-//        taskManager.addTask(task1);
-//        taskManager.addTask(task2);
-//        taskManager.addTask(task3);
-//        taskManager.addTask(task4);
-//        taskManager.addTask(epic1);
-//        taskManager.addTask(epic1Subtask1);
-//        taskManager.addTask(epic1Subtask2);
-//        taskManager.addTask(epic1Subtask3);
-//
-//        System.out.println(taskManager.isOverlap(task1));
-//        System.out.println("\n");
-//        System.out.println(epic1);
-//        System.out.println("\n");
-//        System.out.println(taskManager.getPrioritizedTasks());
-
-
-        // РАУНД 2
-
-//        Task task2 = taskManager.getTask(2);
-//        Epic epic1 = taskManager.getEpic(5);
-//        Subtask epic1Subtask1 = taskManager.getSubtask(6);
-//
-//        Task task2update = TestSprint07Round01.updateTask2(task2);
-//        taskManager.update(task2update);
-//
-//        Subtask epic1Subtask1Update = TestSprint07Round01.updateEpic1Subtask1(epic1Subtask1);
-//        taskManager.update(epic1Subtask1Update);
-//
-//        System.out.println(epic1);
-//        System.out.println();
-//        System.out.println(taskManager.getPrioritizedTasks());
-
-        // РАУНД 3
-
-//        Subtask epic1Subtask3 = taskManager.getSubtask(8);
-//        Subtask epic1Subtask3Update = TestSprint07Round01.updateEpic1Subtask3(epic1Subtask3);
-//        taskManager.update(epic1Subtask3Update);
-//        System.out.println(taskManager.getPrioritizedTasks());
-
-        // РАУНД 4
-
-//        Subtask epic1Subtask2 = taskManager.getSubtask(7);
-//        Subtask epic1Subtask2Update = TestSprint07Round01.updateEpic1Subtask2(epic1Subtask2);
-//        taskManager.update(epic1Subtask2Update);
-//        System.out.println(taskManager.getPrioritizedTasks());
-
-        // РАУНД 5
-
-//        Task task2 = taskManager.getTask(2);
-//        taskManager.delete(task2);
-//        System.out.println(taskManager.getPrioritizedTasks());
-
-
+        FileBackedTaskManager taskManager = loadFromFile(new File(HOME, BACKUP_FILE));
 
     }
 
@@ -322,7 +255,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
+    // ---------------------------------------------
     // ПЕРЕОПРЕДЕЛЕННЫЕ МЕТОДЫ
+    // ---------------------------------------------
 
     // ДОБАВИТЬ
 

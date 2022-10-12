@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileBackedTaskManagerTest extends TaskManagerTest {
 
     protected static String HOME = "resources";
-    protected static String FILE = "backup-s7t1.csv";
+    protected static String FILE = "backup-s7.csv";
     protected static Path path = Paths.get(HOME, FILE);
 
 
@@ -299,9 +299,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     // ---------------------------------------------
     // ---------------------------------------------
-
     // ОБЩИЕ ТЕСТЫ ДЛЯ МЕНЕДЖЕРОВ ЗАДАЧ
-
     // ---------------------------------------------
     // ---------------------------------------------
 
@@ -309,6 +307,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     // ТЕСТЫ 1 — Стандартное поведение
     // ---------------------------------------------
 
+    // ДОБАВИТЬ
+
+    // добавить задачу
     @Test @Override
     public void addTask() {
         String expectedContent =
@@ -324,6 +325,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // добавить эпик без подзадач
     @Test @Override
     public void addEpicWithOutSubtasks() {
         String expectedContent =
@@ -339,6 +341,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // добавить эпик с подзадачами
     @Test @Override
     public void addEpicWithSubtasks() {
         String expectedContent =
@@ -356,6 +359,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ОБНОВИТЬ
+
+    // обновить задачу
     @Test @Override
     public void updateTask() {
         String expectedContent =
@@ -371,6 +377,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить эпик без подзадач
     @Test @Override
     public void updateEpic() {
         String expectedContent =
@@ -386,6 +393,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить подзадачу
     @Test @Override
     public void updateSubtask() {
         String expectedContent =
@@ -403,6 +411,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // УДАЛИТЬ
+
+    // удалить задачу
     @Test @Override
     public void deleteTask() {
         String expectedContent =
@@ -415,6 +426,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить эпик
     @Test @Override
     public void deleteEpic() {
         String expectedContent =
@@ -427,6 +439,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить подзадачу
     @Test @Override
     public void deleteSubtask() {
         String expectedContent =
@@ -443,6 +456,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все задачи
     @Test @Override
     public void deleteAllTasks() {
         String expectedContent =
@@ -455,6 +469,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все эпики
     @Test @Override
     public void deleteAllEpics() {
         String expectedContent =
@@ -467,6 +482,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все подзадачи
     @Test @Override
     public void deleteAllSubtasks() {
         String expectedContent =
@@ -483,6 +499,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ДАТА, ВРЕМЯ, ПРОДОЛЖИТЕЛЬНОСТЬ
+
+    // рассчитать время эпика по подзадачам, где указано время
     @Test @Override
     public void shouldCalculateEpicTimingFromSubtasksWithTiming() {
         String expectedContent =
@@ -502,6 +521,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // время эпика меняется при изменении времени подзадачи
     @Test @Override
     void shouldUpdateEpicTimingIfSubtaskTimeUpdated() {
         String expectedContent =
@@ -520,6 +540,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // задачи без времени должны добавляться в конец списка по приоритету
     @Test @Override
     void shouldAddTasksWithoutTimingAsNonPriority() {
         String expectedContent =
@@ -537,6 +558,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ПЕРЕСЕЧЕНИЕ ЗАДАЧ
+
+    // пересечение задач: новая задача начинается до того, как завершилась первая
     @Test @Override
     void shouldPreventOverlapIfTask1EndsAfterTask2Starts() {
         String expectedContent =
@@ -553,6 +577,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // пересечение задач: новая задача завершается после того, как началась первая
     @Test @Override
     void shouldPreventOverlapIfTask1StartsBeforeTask2Ends() {
         String expectedContent =
@@ -569,6 +594,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // пересечение задач: новая задача начинается одновременно с первой
     @Test @Override
     void shouldPreventOverlapIfTasksStartAtOneTime() {
         String expectedContent =
@@ -585,6 +611,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // пересечение задач: новая задача начинается и завершается, пока идет первая
     @Test @Override
     void shouldPreventOverlapIfTask2StartsAndEndsWhileTask1IsInProgress() {
         String expectedContent =
@@ -602,6 +629,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     }
 
+    // пересечение задач при обновлении одной из них — в случае пересечения сохраняется старое время начала
     @Test @Override
     void shouldPreventOverlapOnUpdate() {
          String expectedContent =
@@ -622,6 +650,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     // ТЕСТЫ 2 — Пустой список задач
     // ---------------------------------------------
 
+    // ОБНОВИТЬ
+
+    // обновить задачу в пустом списке
     @Test @Override
     void shouldReturnNullWhenUpdatingTaskInEmptyList() {
         String expectedContent = "";
@@ -633,6 +664,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить эпик в пустом списке
     @Test @Override
     void shouldReturnNullWhenUpdatingEpicInEmptyList() {
         String expectedContent = "";
@@ -644,6 +676,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить подзадачу в пустом списке
     @Test @Override
     void shouldReturnNullWhenUpdatingSubtaskInEmptyList() {
         String expectedContent = "";
@@ -655,6 +688,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ПОЛУЧИТЬ
+
+    // получить задачу из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingTaskFromEmptyList() {
         String expectedContent = "";
@@ -666,6 +702,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить эпик из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingEpicFromEmptyList() {
         String expectedContent = "";
@@ -677,6 +714,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить подзадачу из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingSubtaskFromEmptyList() {
         String expectedContent = "";
@@ -688,6 +726,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все задачи из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingAllTasksIfListIsEmpty() {
         String expectedContent = "";
@@ -699,6 +738,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все эпики из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingAllEpicsIfListIsEmpty() {
         String expectedContent = "";
@@ -710,6 +750,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все подзадачи из пустого списка
     @Test @Override
     void shouldReturnNullWhenGettingAllSubtasksIfListIsEmpty() {
         String expectedContent = "";
@@ -721,6 +762,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все подзадачи эпика, если пусты списки эпиков и подзадач
     @Test @Override
     void shouldReturnNullWhenGettingEpicSubtasksIfListsAreEmpty() {
         String expectedContent = "";
@@ -732,6 +774,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все подзадачи эпика, если пуст список подзадач в менеджере
     @Test @Override
     void shouldReturnNullWhenGettingEpicSubtasksIfSubtaskListIsEmpty() {
         String expectedContent =
@@ -746,6 +789,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // УДАЛИТЬ
+
+    // удалить задачу из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingTaskFromEmptyList() {
         String expectedContent = "";
@@ -757,6 +803,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить эпик из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingEpicFromEmptyList() {
         String expectedContent = "";
@@ -768,6 +815,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить подзадачу из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingSubtaskFromEmptyList() {
         String expectedContent = "";
@@ -779,6 +827,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все задачи из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingAllTasksIfListIsEmpty() {
         String expectedContent = "";
@@ -790,6 +839,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все эпики из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingAllEpicIfListIsEmpty() {
         String expectedContent = "";
@@ -801,6 +851,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить все подзадачи из пустого списка
     @Test @Override
     void shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty() {
         String expectedContent = "";
@@ -812,6 +863,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ДОПОЛНИТЕЛЬНО
+
+    // получить задачи из пустого списка истории
     @Test @Override
     void shouldReturnEmptyListIfHistoryIsEmpty() {
         String expectedContent = "";
@@ -823,6 +877,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить задачи из пустого списка приоритетных задач
     @Test @Override
     void shouldReturnEmptyListIfPriorityTaskListIsEmpty() {
         String expectedContent = "";
@@ -834,10 +889,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+
     // ---------------------------------------------
     // ТЕСТЫ 3 — Несуществующий идентификатор задачи
     // ---------------------------------------------
 
+    // ОБНОВИТЬ
+
+    // обновить задачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenUpdatingTaskWithInvalidId() {
         String expectedContent =
@@ -853,6 +912,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить эпик, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenUpdatingEpicWithInvalidId() {
         String expectedContent =
@@ -868,6 +928,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // обновить подзадачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenUpdatingSubtaskWithInvalidId() {
         String expectedContent =
@@ -884,6 +945,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // ПОЛУЧИТЬ
+
+    // получить задачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenGettingTaskWithInvalidId() {
         String expectedContent =
@@ -899,6 +963,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить эпик, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenGettingEpicWithInvalidId() {
         String expectedContent =
@@ -914,6 +979,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить подзадачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenGettingSubtaskWithInvalidId() {
         String expectedContent =
@@ -930,6 +996,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // получить все подзадачи эпика, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenGettingEpicSubtasksWithInvalidEpicId() {
         String expectedContent =
@@ -945,6 +1012,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // УДАЛИТЬ
+
+    // удалить задачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenDeletingTaskWithInvalidId() {
         String expectedContent =
@@ -960,6 +1030,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить эпик, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenDeletingEpicWithInvalidId() {
         String expectedContent =
@@ -975,6 +1046,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
     }
 
+    // удалить подзадачу, используя несуществующий ID
     @Test @Override
     void shouldReturnNullWhenDeletingSubtaskWithInvalidId() {
         String expectedContent =

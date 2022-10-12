@@ -23,12 +23,14 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
         HistoryManagerTest.historyManager = historyManager;
     }
 
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+    // ---------------------------------------------
+    //  ШАБЛОНЫ ЗАДАЧ
+    // ---------------------------------------------
 
     protected void createTask1() {
         task1 = new Task("Task1",
-                "Description task 1",
-                "NEW");
+                         "Description task 1",
+                         "NEW");
         task1.setId(1);
     }
 
@@ -39,22 +41,26 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     protected void createSubtask1() {
         subtask1 = new Subtask("Epic1 Subtask1",
-                "Description Epic1 Subtask1",
-                "NEW",
-                "Epic1");
+                               "Description Epic1 Subtask1",
+                               "NEW",
+                               "Epic1");
         subtask1.setId(3);
     }
 
     protected void createSubtask2() {
         subtask2 = new Subtask("Epic1 Subtask2",
-                "Description Epic1 Subtask2",
-                "NEW",
-                "Epic1");
+                               "Description Epic1 Subtask2",
+                               "NEW",
+                               "Epic1");
         subtask2.setId(4);
     }
 
 
+    // ---------------------------------------------
     // ТЕСТЫ
+    // ---------------------------------------------
+
+    // ДОБАВИТЬ
 
     // добавить в историю
     @Test
@@ -149,6 +155,8 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     }
 
+    // УДАЛИТЬ
+
     // удалить первую задачу
     @Test
     void removeFirst() {
@@ -205,6 +213,8 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
         assertEquals(2, history.size(), "Неверное количество задач в истории");
         assertEquals(expectedHistory, history, "Неверный список задач в истории");
     }
+
+    // ДОПОЛНИТЕЛЬНО
 
     // пустая история задач
     @Test

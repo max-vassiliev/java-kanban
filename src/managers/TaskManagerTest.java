@@ -32,8 +32,69 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     // ---------------------------------------------
+    //  ШАБЛОНЫ ЗАДАЧ
+    // ---------------------------------------------
+
+    protected void createTask1() {
+        task1 = new Task("Task1",
+                "Description task 1",
+                "NEW",
+                "15.10.2022, 14:00",
+                "01:00");
+    }
+
+    protected void createTask2() {
+        task2 = new Task("Task2",
+                "Description task 2",
+                "NEW",
+                "15.11.2022, 14:00",
+                "01:00");
+    }
+
+    protected void createEpic1() {
+        epic1 = new Epic("Epic1", "Description Epic1");
+    }
+
+    protected void createEpic2() {
+        epic2 = new Epic("Epic2", "Description Epic2");
+    }
+
+    protected void createSubtask1() {
+        subtask1 = new Subtask("Epic1 Subtask1",
+                "Description Epic1 Subtask1",
+                "NEW",
+                "Epic1",
+                "16.10.2022, 12:00",
+                "00:30"
+        );
+    }
+
+    protected void createSubtask2() {
+        subtask2 = new Subtask("Epic1 Subtask2",
+                "Description Epic1 Subtask2",
+                "NEW",
+                "Epic1",
+                "17.10.2022, 12:00",
+                "00:30"
+        );
+    }
+
+    protected void createSubtask3() {
+        subtask3 = new Subtask("Epic2 Subtask3",
+                "Description Epic2 Subtask3",
+                "NEW",
+                "Epic2",
+                "18.10.2022, 14:00",
+                "00:30"
+        );
+    }
+
+
+    // ---------------------------------------------
     // ТЕСТЫ 1 — Стандартное поведение
     // ---------------------------------------------
+
+    // ДОБАВИТЬ
 
     // добавить задачу
     @Test
@@ -120,6 +181,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(subtask2, subtasks.get(1), "Подзадачи не совпадают");
     }
 
+    // ОБНОВИТЬ
+
     // обновить задачу
     @Test
     public void updateTask() {
@@ -169,6 +232,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(savedSubtask1, subtasks.get(0), "Подзадачи не совпадают");
         assertEquals(savedEpic.getStatus(), Status.IN_PROGRESS, "Неверный статус эпика");
     }
+
+    // УДАЛИТЬ
 
     // удалить задачу
     @Test
@@ -403,16 +468,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
-    @Test
+    // ДАТА, ВРЕМЯ, ПРОДОЛЖИТЕЛЬНОСТЬ
+
     // рассчитать время эпика по подзадачам, где указано время
+    @Test
     void shouldCalculateEpicTimingFromSubtasksWithTiming() {
         createEpic1();
         createSubtask1();
         createSubtask2();
         Subtask subtaskNonPriority = new Subtask("Epic1 Subtask3",
-                                            "Description Epic1 Subtask3",
-                                                "NEW",
-                                         "Epic1"
+                                                 "Description Epic1 Subtask3",
+                                                 "NEW",
+                                                 "Epic1"
         );
 
         final int idEpic1 = taskManager.add(epic1);
@@ -443,9 +510,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         createSubtask1();
         createSubtask2();
         Subtask subtaskToUpdate = new Subtask("Epic1 Subtask3",
-                                         "Description Epic1 Subtask3",
-                                             "NEW",
-                                      "Epic1"
+                                              "Description Epic1 Subtask3",
+                                              "NEW",
+                                              "Epic1"
         );
 
         final int idEpic1 = taskManager.add(epic1);
@@ -465,11 +532,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         // добавляем время для третьей подзадачи
         // она должна стать последней для эпика
         Subtask subtaskUpdate = new Subtask("Epic1 Subtask3",
-                                "Description Epic1 Subtask3",
-                                "NEW",
-                                "Epic1",
-                                "19.10.2022, 10:00",
-                                "01:10"
+                                            "Description Epic1 Subtask3",
+                                            "NEW",
+                                            "Epic1",
+                                            "19.10.2022, 10:00",
+                                            "01:10"
         );
         subtaskUpdate.setId(subtaskToUpdateSaved.getId());
         subtaskUpdate.setEpicId(subtaskToUpdateSaved.getEpicId());
@@ -521,12 +588,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.add(task2);
 
         final List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-        final List<Task> expectedprioritizedTasks = new ArrayList<>(List.of(task1, task2,
+        final List<Task> expectedPrioritizedTasks = new ArrayList<>(List.of(task1, task2,
                                                                             nonPriorityTaskA,
                                                                             nonPriorityTaskB));
 
-        assertEquals(expectedprioritizedTasks, prioritizedTasks, "Списки задач не совпадают");
+        assertEquals(expectedPrioritizedTasks, prioritizedTasks, "Списки задач не совпадают");
     }
+
+    // ПЕРЕСЕЧЕНИЕ ЗАДАЧ
 
     // пересечение задач: новая задача начинается до того, как завершилась первая
     @Test
@@ -583,10 +652,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         createTask1();
         // task2 начинается в 14:00 и длится 15 минут
         task2 = new Task("Task2",
-                "Description task 2",
-                "NEW",
-                "15.10.2022, 14:00",
-                "00:15");
+                         "Description task 2",
+                         "NEW",
+                         "15.10.2022, 14:00",
+                         "00:15");
 
         taskManager.add(task1);
         final int idTask2 = taskManager.add(task2);
@@ -670,6 +739,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     // ТЕСТЫ 2 — Пустой список задач
     // ---------------------------------------------
 
+    // ОБНОВИТЬ
+
     // обновить задачу в пустом списке
     @Test
     void shouldReturnNullWhenUpdatingTaskInEmptyList() {
@@ -723,6 +794,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
+
+    // ПОЛУЧИТЬ
 
     // получить задачу из пустого списка
     @Test
@@ -854,6 +927,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
+    // УДАЛИТЬ
+
     // удалить задачу из пустого списка
     @Test
     void shouldReturnNullWhenDeletingTaskFromEmptyList() {
@@ -950,6 +1025,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
+    // ДОПОЛНИТЕЛЬНО
+
     // получить задачи из пустого списка истории
     @Test
     void shouldReturnEmptyListIfHistoryIsEmpty() {
@@ -970,9 +1047,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedList, prioritizedTasks, "Список не пустой");
     }
 
+
     // ---------------------------------------------
     // ТЕСТЫ 3 — Несуществующий идентификатор задачи
     // ---------------------------------------------
+
+    // ОБНОВИТЬ
 
     // обновить задачу, используя несуществующий ID
     @Test
@@ -1037,6 +1117,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
 
+    // ПОЛУЧИТЬ
+
     // получить задачу, используя несуществующий ID
     @Test
     void shouldReturnNullWhenGettingTaskWithInvalidId() {
@@ -1057,7 +1139,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals("Задачи нет в списке", exception.getMessage());
     }
 
-    // обновить эпик, используя несуществующий ID
+    // получить эпик, используя несуществующий ID
     @Test
     void shouldReturnNullWhenGettingEpicWithInvalidId() {
         createEpic1();
@@ -1118,6 +1200,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals("Эпика нет в списке", exception.getMessage());
     }
+
+    // УДАЛИТЬ
 
     // удалить задачу, используя несуществующий ID
     @Test
@@ -1180,66 +1264,5 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 });
 
         assertEquals("Подзадачи нет в списке", exception.getMessage());
-    }
-
-
-    // ---------------------------------------------
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-    // ---------------------------------------------
-
-    // создать задачи по шаблону
-
-    protected void createTask1() {
-        task1 = new Task("Task1",
-                         "Description task 1",
-                         "NEW",
-                         "15.10.2022, 14:00",
-                         "01:00");
-    }
-
-    protected void createTask2() {
-        task2 = new Task("Task2",
-                         "Description task 2",
-                         "NEW",
-                         "15.11.2022, 14:00",
-                         "01:00");
-    }
-
-    protected void createEpic1() {
-        epic1 = new Epic("Epic1", "Description Epic1");
-    }
-
-    protected void createEpic2() {
-        epic2 = new Epic("Epic2", "Description Epic2");
-    }
-
-    protected void createSubtask1() {
-        subtask1 = new Subtask("Epic1 Subtask1",
-                               "Description Epic1 Subtask1",
-                               "NEW",
-                               "Epic1",
-                               "16.10.2022, 12:00",
-                               "00:30"
-        );
-    }
-
-    protected void createSubtask2() {
-        subtask2 = new Subtask("Epic1 Subtask2",
-                "Description Epic1 Subtask2",
-                "NEW",
-                "Epic1",
-                "17.10.2022, 12:00",
-                "00:30"
-        );
-    }
-
-    protected void createSubtask3() {
-        subtask3 = new Subtask("Epic2 Subtask3",
-                "Description Epic2 Subtask3",
-                "NEW",
-                "Epic2",
-                "18.10.2022, 14:00",
-                "00:30"
-        );
     }
 }

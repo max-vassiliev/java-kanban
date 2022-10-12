@@ -2,7 +2,6 @@ package tasks;
 
 import managers.InMemoryTaskManager;
 import managers.TaskManager;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +14,9 @@ class EpicTest {
     private static Epic epic;
     private static Subtask subtask1;
     private static Subtask subtask2;
-    private static Subtask subtask3;  // TODO проверить необходимость поля
 
-    @BeforeAll
-    public static void createTaskManager() {
+    @BeforeEach
+    public void createTaskManager() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -28,38 +26,37 @@ class EpicTest {
         taskManager.add(epic);
     }
 
+    // ---------------------------------------------
+    //  ШАБЛОНЫ ПОДЗАДАЧ
+    // ---------------------------------------------
+
     public void createSubtask1() {
         subtask1 = new Subtask("Subtask1",
-                         "Description subtask 1",
-                             "NEW",
-                      "Epic1");
+                               "Description subtask 1",
+                               "NEW",
+                               "Epic1");
     }
 
     public void createSubtask2() {
         subtask2 = new Subtask("Subtask2",
-                "Description subtask 2",
-                "NEW",
-                "Epic1");
+                               "Description subtask 2",
+                               "NEW",
+                               "Epic1");
     }
 
-    // TODO удалить, если не используется
-    public void createSubtask3() {
-        subtask3 = new Subtask("Subtask3",
-                "Description subtask 3",
-                "NEW",
-                "Epic1");
-    }
+    // ---------------------------------------------
+    //  ТЕСТЫ
+    // ---------------------------------------------
 
-
+    // пустой список подзадач
     @Test
     public void shouldHaveStatusNewWhenNoSubtasks() {
-        // Статус эпика — NEW, если список подзадач пустой
         assertEquals(epic.getStatus(), Status.NEW);
     }
 
+    // всех подзадачи со статусом NEW
     @Test
     public void shouldHaveStatusNewIfAllSubtasksAreNew() {
-        // Статус эпика — NEW, если у всех подзадач статус NEW
         createSubtask1();
         createSubtask2();
         taskManager.add(subtask1);
@@ -67,9 +64,9 @@ class EpicTest {
         assertEquals(epic.getStatus(), Status.NEW);
     }
 
+    // все подзадачи со статусом DONE
     @Test
     public void shouldHaveStatusDoneIfAllSubtasksAreDone() {
-        // Статус эпика — DONE, если у всех подзадач статус DONE
         createSubtask1();
         createSubtask2();
         subtask1.setStatus(Status.DONE);
@@ -79,9 +76,9 @@ class EpicTest {
         assertEquals(epic.getStatus(), Status.DONE);
     }
 
+    // подзадачи со статусами NEW и DONE
     @Test
     public void shouldHaveStatusInProgressIfSubtasksAreNewOrDone() {
-        // Статус эпика — IN_PROGRESS, если у подзадач статусы NEW и DONE
         createSubtask1();
         createSubtask2();
         subtask1.setStatus(Status.DONE);
@@ -90,9 +87,9 @@ class EpicTest {
         assertEquals(epic.getStatus(), Status.IN_PROGRESS);
     }
 
+    // подзадачи со статусом IN_PROGRESS
     @Test
     public void shouldHaveStatusInProgressIfAllSubtasksAreInProgress() {
-        // Статус эпика — IN_PROGRESS, если у подзадач статус IN_PROGRESS
         createSubtask1();
         createSubtask2();
         subtask1.setStatus(Status.IN_PROGRESS);

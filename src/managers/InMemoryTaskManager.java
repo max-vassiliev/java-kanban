@@ -262,7 +262,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // проверить статус эпика
+    // для эпика — проверить статус
     protected void checkEpicStatus(Epic epic) {
         int statusDone = 0;
         int statusNew = 0;
@@ -290,7 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // связать подзадачу с эпиком
+    // для эпика — связать подзадачу с эпиком
     protected void setEpicSubtaskRelation(Subtask subtask) {
         if (subtask.getEpicId() != 0) {
             Epic epic = epics.get(subtask.getEpicId());
@@ -430,7 +430,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (task1.getStartTime() == null || task2.getStartTime() == null || task1.equals(task2)) {
             return false;
         }
-        return // задачи начинаются в одно время
+        return  // задачи начинаются в одно время
                (task1.getStartTime().equals(task2.getStartTime()) ||
                 // task1 начинается, пока не завершилась task2
                (task1.getStartTime().isAfter(task2.getStartTime()) &&
