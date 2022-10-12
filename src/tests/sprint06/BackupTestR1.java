@@ -6,7 +6,7 @@ import tasks.Task;
 
 public class BackupTestR1 {
 
-    public static Task createTask1() {
+    public static Task createTask1S7() {
         return new Task("Task1",
                 "Description task1",
                 "NEW"

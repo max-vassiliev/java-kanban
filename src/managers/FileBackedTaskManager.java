@@ -4,7 +4,6 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskType;
-import tests.sprint07.*;
 import utilities.ManagerSaveException;
 import utilities.TaskIdComparator;
 
@@ -79,11 +78,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         // РАУНД 1
 
 //        Task task1 = TestSprint07Round01.createTask1(); // 15 октября
-//        Task task2 = TestSprint07Round01.createTask2(); // 15 октября (пересечение)
-//        Task task3 = TestSprint07Round01.createTask3(); // 12 октября
-//        Task task4 = TestSprint07Round01.createTask4(); // без даты
+//        Task task2 = TestSprint07Round01.createTask2S7(); // 15 октября (пересечение)
+//        Task task3 = TestSprint07Round01.createTask3S7(); // 12 октября
+//        Task task4 = TestSprint07Round01.createTask4S7(); // без даты
 //
-//        Epic epic1 = TestSprint07Round01.createEpic1();
+//        Epic epic1 = TestSprint07Round01.createEpic1S7();
 //        Subtask epic1Subtask1 = TestSprint07Round01.createEpic1Subtask1();
 //        Subtask epic1Subtask2 = TestSprint07Round01.createEpic1Subtask2();
 //        Subtask epic1Subtask3 = TestSprint07Round01.createEpic1Subtask3();
@@ -136,9 +135,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         // РАУНД 5
 
-        Task task2 = taskManager.getTask(2);
-        taskManager.delete(task2);
-        System.out.println(taskManager.getPrioritizedTasks());
+//        Task task2 = taskManager.getTask(2);
+//        taskManager.delete(task2);
+//        System.out.println(taskManager.getPrioritizedTasks());
+
+
 
     }
 
@@ -229,7 +230,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return history;
     }
 
-    // TODO попробовать то же самое через дженерик — объединить с Duration
     // восстановить время начала
     public LocalDateTime parseStartTime(String str) {
         if (str.equals("null")) {

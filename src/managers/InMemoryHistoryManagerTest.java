@@ -54,4 +54,5 @@ class InMemoryHistoryManagerTest extends HistoryManagerTest  {
     void shouldReturnEmptyListIfNoTasksInHistory() {
         super.shouldReturnEmptyListIfNoTasksInHistory();
     }
+
 }

@@ -60,6 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
     // обновить задачу
     @Override
     public void update(Task task) {
+        checkTaskInMap(task.getId());
         tasks.put(task.getId(), task);
         checkOverlap(task);
         updatePrioritizedTask(task);
@@ -68,12 +69,14 @@ public class InMemoryTaskManager implements TaskManager {
     // обновить эпик
     @Override
     public void update(Epic epic) {
+        checkEpicInMap(epic.getId());
         epics.put(epic.getId(), epic);
     }
 
     // обновить подзадачу
     @Override
     public void update(Subtask subtask) {
+        checkSubtaskInMap(subtask.getId());
         subtasks.put(subtask.getId(), subtask);
         Epic relatedEpic = epics.get(subtask.getEpicId());
         checkEpicStatus(relatedEpic);
@@ -87,6 +90,7 @@ public class InMemoryTaskManager implements TaskManager {
     // получить задачу
     @Override
     public Task getTask(int id) {
+        checkTaskInMap(id);
         Task task = tasks.get(id);
         historyManager.add(task);
         return task;
@@ -95,6 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
     // получить эпик
     @Override
     public Epic getEpic(int id) {
+        checkEpicInMap(id);
         Epic epic = epics.get(id);
         historyManager.add(epic);
         return epic;
@@ -102,8 +107,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     // получить подзадачу
     @Override
-    public Subtask getSubtask(int subtaskId) {
-        Subtask subtask = subtasks.get(subtaskId);
+    public Subtask getSubtask(int id) {
+        checkSubtaskInMap(id);
+        Subtask subtask = subtasks.get(id);
         historyManager.add(subtask);
         return subtask;
     }
@@ -113,26 +119,31 @@ public class InMemoryTaskManager implements TaskManager {
     // получить список всех задач
     @Override
     public List<Task> getTasks() {
+        checkIfTaskMapIsEmpty();
         return new ArrayList<>(tasks.values());
     }
 
     // получить список всех эпиков
     @Override
     public List<Epic> getEpics() {
+        checkIfEpicMapIsEmpty();
         return new ArrayList<>(epics.values());
     }
 
     // получить список всех подзадач
     @Override
     public List<Subtask> getSubtasks() {
+        checkIfSubtaskMapIsEmpty();
         return new ArrayList<>(subtasks.values());
     }
 
     // получить список всех подзадач одного эпика
     @Override
     public List<Subtask> getSubtasksInEpic(int id) {
-        ArrayList<Subtask> subtasksList = new ArrayList<>();
+        checkEpicInMap(id);
+        checkIfSubtaskMapIsEmpty();
         Epic epic = this.getEpic(id);
+        ArrayList<Subtask> subtasksList = new ArrayList<>();
 
         for (Integer subtaskId : epic.getRelatedSubtasks()) {
             Subtask subtask = getSubtask(subtaskId);
@@ -146,6 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить задачу
     @Override
     public void delete(Task task) {
+        checkTaskInMap(task.getId());
         prioritizedTasks.remove(task);
         historyManager.remove(task.getId());
         tasks.remove(task.getId());
@@ -154,6 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить эпик
     @Override
     public void delete(Epic epic) {
+        checkEpicInMap(epic.getId());
         for (Integer subtaskId : epic.getRelatedSubtasks()){
             prioritizedTasks.remove(subtasks.get(subtaskId));
             historyManager.remove(subtaskId);
@@ -166,6 +179,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить подзадачу
     @Override
     public void delete(Subtask subtask) {
+        checkSubtaskInMap(subtask.getId());
         Epic relatedEpic = epics.get(subtask.getEpicId());
         prioritizedTasks.remove(subtask);
         relatedEpic.removeRelatedSubtask(subtask.getId());
@@ -181,6 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить все задачи
     @Override
     public void deleteAllTasks() {
+        checkIfTaskMapIsEmpty();
         for (int id : tasks.keySet()) {
             historyManager.remove(id);
             prioritizedTasks.remove(tasks.get(id));
@@ -191,6 +206,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить все эпики
     @Override
     public void deleteAllEpics() {
+        checkIfEpicMapIsEmpty();
         for (int id : subtasks.keySet()) {
             historyManager.remove(id);
             prioritizedTasks.remove(subtasks.get(id));
@@ -205,6 +221,7 @@ public class InMemoryTaskManager implements TaskManager {
     // удалить все подзадачи
     @Override
     public void deleteAllSubtasks() {
+        checkIfSubtaskMapIsEmpty();
         for (int id : subtasks.keySet()) {
             historyManager.remove(id);
             prioritizedTasks.remove(subtasks.get(id));
@@ -230,8 +247,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // Получить список задач в порядке приоритета
-    public Set<Task> getPrioritizedTasks() {
-        return prioritizedTasks;
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
 
@@ -298,11 +316,13 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         // время начала
-        if (epic.getStartTime() == null || subtask.getStartTime().isBefore(epic.getStartTime())) {
-            if (subtask.getStartTime().isBefore(epic.getStartTime())) {
-                Subtask oldStartTimeSubtask = subtasks.get(epic.getStartTimeSubtask());
-                oldStartTimeSubtask.setEpicStartTime(false);
-            }
+        if (epic.getStartTime() == null) {
+            epic.setStartTime(subtask.getStartTime());
+            epic.setStartTimeSubtask(subtask.getId());
+            subtask.setEpicStartTime(true);
+        } else if (subtask.getStartTime().isBefore(epic.getStartTime())) {
+            Subtask oldStartTimeSubtask = subtasks.get(epic.getStartTimeSubtask());
+            oldStartTimeSubtask.setEpicStartTime(false);
             epic.setStartTime(subtask.getStartTime());
             epic.setStartTimeSubtask(subtask.getId());
             subtask.setEpicStartTime(true);
@@ -429,4 +449,53 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.add(task);
         }
     }
+
+    // проверить, что список задач не пуст
+    protected void checkIfTaskMapIsEmpty() {
+        if (tasks.isEmpty()){
+            throw new NullPointerException("Список задач пуст");
+        }
+    }
+
+    // проверить, что список эпиков не пуст
+    protected void checkIfEpicMapIsEmpty() {
+        if (epics.isEmpty()){
+            throw new NullPointerException("Список эпиков пуст");
+        }
+    }
+
+    // проверить, что список подзадач не пуст
+    protected void checkIfSubtaskMapIsEmpty() {
+        if (subtasks.isEmpty()) {
+            throw new NullPointerException("Список подзадач пуст");
+        }
+    }
+
+    // проверить, что задача есть в списке задач
+    protected void checkTaskInMap(int id) {
+        if (tasks.isEmpty()){
+            throw new NullPointerException("Список задач пуст");
+        } else if (!tasks.containsKey(id)) {
+            throw new NullPointerException("Задачи нет в списке");
+        }
+    }
+
+    // проверить, что эпик есть в списке эпиков
+    protected void checkEpicInMap(int id) {
+        if (epics.isEmpty()) {
+            throw new NullPointerException("Список эпиков пуст");
+        } else if (!epics.containsKey(id)) {
+            throw new NullPointerException("Эпика нет в списке");
+        }
+    }
+
+    // проверить, что подзадача есть в списке подзадач
+    protected void checkSubtaskInMap(int id) {
+        if (subtasks.isEmpty()) {
+            throw new NullPointerException("Список подзадач пуст");
+        } else if (!subtasks.containsKey(id)) {
+            throw new NullPointerException("Подзадачи нет в списке");
+        }
+    }
+
 }

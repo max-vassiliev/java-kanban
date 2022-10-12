@@ -4,10 +4,6 @@ import managers.FileBackedTaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tests.sprint06.BackupTestR1;
-import tests.sprint06.BackupTestR2;
-import tests.sprint06.BackupTestR4;
-import tests.sprint06.BackupTestR6;
 
 public class Sprint6BackupTestMain {
 
@@ -22,7 +18,7 @@ public class Sprint6BackupTestMain {
 //        Sprint6BackupTestMain.backupTestMain(taskManager1);
 
     public static void backupTestMain(FileBackedTaskManager taskManager1) {
-        Task task1 = BackupTestR1.createTask1();
+        Task task1 = BackupTestR1.createTask1S7();
         Task task2 = BackupTestR2.createTask2();
         Task task3 = BackupTestR6.createTask3();
         Epic epic1 = BackupTestR2.createEpic1();

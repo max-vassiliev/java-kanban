@@ -112,8 +112,8 @@ public class Sprint6BackupTestBonus {
 
 //      *** Раунд 2. НАЧАЛО 🚀 ***
 
-//        Task task2 = BackupTestR2.createTask2();
-//        Epic epic1 = BackupTestR2.createEpic1();
+//        Task task2 = BackupTestR2.createTask2S7();
+//        Epic epic1 = BackupTestR2.createEpic1S7();
 //        Subtask epic1subtask1 = BackupTestR2.createEpic1Subtask1();
 //        Subtask epic2Subtask1 = BackupTestR2.createEpic2Subtask1();
 //
@@ -276,7 +276,7 @@ public class Sprint6BackupTestBonus {
 
 //      *** Раунд 6. НАЧАЛО 🚀 ***
 
-//        Task task3 = BackupTestR6.createTask3();
+//        Task task3 = BackupTestR6.createTask3S7();
 //        Epic epic3 = BackupTestR6.createEpic3();
 //        Subtask epic3Subtask1 = BackupTestR6.createEpic3Subtask1();
 //

@@ -5,6 +5,7 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -60,4 +61,6 @@ public interface TaskManager {
 
     // показать историю просмотров
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 }
