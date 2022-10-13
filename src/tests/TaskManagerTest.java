@@ -1,7 +1,7 @@
-package managers;
+package tests;
 
+import managers.TaskManager;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import tasks.*;
 
 import java.time.Duration;
@@ -9,12 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -114,8 +109,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
         assertEquals(1, prioritizedTasks.size(), "Неверное количество приоритетных задач");
         assertEquals(task1, prioritizedTasks.get(0), "Задачи не совпадают.");
-
-    };
+    }
 
     // добавить эпик без подзадач
     @Test
@@ -246,12 +240,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTasks();
-                    }
-                });
+                () -> taskManager.getTasks());
 
         assertEquals("Список задач пуст", exception.getMessage());
         List<Task> tasksInHistory = taskManager.getHistory();
@@ -283,24 +272,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpics();
-                    }
-                });
+                () -> taskManager.getEpics());
 
         assertEquals("Список эпиков пуст", exception.getMessage());
 
 
         final NullPointerException exception2 = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasks();
-                    }
-                });
+                () -> taskManager.getSubtasks());
 
         assertEquals("Список подзадач пуст", exception2.getMessage());
     }
@@ -329,7 +308,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals(1, subtasks.size(), "Неверное количество подзадач");
         assertEquals(1, epicSubtasks.size(), "Неверное количество подзадач у эпика");
-        assertEquals(epicSubtasks, subtasks, "Cписки подзадач не совпадают");
+        assertEquals(epicSubtasks, subtasks, "Списки подзадач не совпадают");
         assertEquals(2, history.size(), "Неверное количество задач в истории");
         assertEquals(1, prioritizedTasks.size(), "Неверное количество приоритетных задач");
 
@@ -359,12 +338,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTasks();
-                    }
-                });
+                () -> taskManager.getTasks());
 
         assertEquals("Список задач пуст", exception.getMessage());
 
@@ -399,25 +373,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(0, history.size(), "Остались лишние задачи в истории");
         assertEquals(0, prioritizedTasks.size(), "Неверное количество приоритетных задач");
 
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpics();
-                    }
-                });
+        final NullPointerException exception = assertThrows(NullPointerException.class,
+                                                            taskManager::getEpics);
 
         assertEquals("Список эпиков пуст", exception.getMessage());
 
-        final NullPointerException exception2 = assertThrows(
-                NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasks();
-                    }
-                });
+        final NullPointerException exception2 = assertThrows(NullPointerException.class,
+                                                             taskManager::getSubtasks);
 
         assertEquals("Список подзадач пуст", exception2.getMessage());
     }
@@ -458,12 +420,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasks();
-                    }
-                });
+                taskManager::getSubtasks);
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -490,17 +447,22 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic savedEpic1 = taskManager.getEpic(idEpic1);
         Subtask savedSubtask1 = taskManager.getSubtask(idSubtask1);
         Subtask savedSubtask2 = taskManager.getSubtask(idSubtask2);
+
+
+        if (savedEpic1.getEndTime().isEmpty()) fail("Не удалось получить время завершения эпика");
+        if (savedSubtask2.getEndTime().isEmpty()) fail("Не удалось получить время завершения подзадачи");
+
         Duration expectedEpicDuration = Duration.between(savedSubtask1.getStartTime(),
                                                          savedSubtask2.getEndTime().get());
 
         assertTrue(savedSubtask1.isEpicStartTime(), "Подзадача должна быть начальной для эпика");
         assertTrue(savedSubtask2.isEpicEndTime(), "Подзадача должна быть завершающей для эпика");
         assertEquals(savedSubtask1.getStartTime(), savedEpic1.getStartTime(),
-                                                    "Неверное время начала эпика");
+                                                   "Неверное время начала эпика");
         assertEquals(savedSubtask2.getEndTime().get(), savedEpic1.getEndTime().get(),
-                                                    "Неверное время завершения эпика");
+                                                   "Неверное время завершения эпика");
         assertEquals(expectedEpicDuration, savedEpic1.getDuration(),
-                                                    "Неверная продолжительность эпика");
+                                                   "Неверная продолжительность эпика");
     }
 
     // время эпика меняется при изменении времени подзадачи
@@ -522,6 +484,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final Epic epic1Saved = taskManager.getEpic(idEpic1);
         final LocalDateTime epic1SavedStartTime = epic1Saved.getStartTime();
+        if (epic1Saved.getEndTime().isEmpty()) fail("Не удалось получить время завершения эпика");
         final LocalDateTime epic1SavedEndTime = epic1Saved.getEndTime().get();
         final Duration epic1SavedDuration = epic1Saved.getDuration();
 
@@ -547,7 +510,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Epic epic1Updated = taskManager.getEpic(idEpic1);
         final Subtask subtaskToUpdateUpdated = taskManager.getSubtask(idSubtaskToUpdate);
 
+        if (subtask2Saved.getEndTime().isEmpty()) fail("Не удалось получить время завершения подзадачи");
+        if (subtaskToUpdateUpdated.getEndTime().isEmpty()) fail("Не удалось получить время завершения подзадачи");
+        if (epic1Updated.getEndTime().isEmpty()) fail("Не удалось получить время завершения эпик");
+
         final LocalDateTime expectedStartTime = subtask1Saved.getStartTime();
+
         final LocalDateTime expectedEndTimeSaved = subtask2Saved.getEndTime().get();
         final LocalDateTime expectedEndTimeUpdated = subtaskToUpdateUpdated.getEndTime().get();
 
@@ -749,12 +717,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(task1);
-                    }
-                });
+                () -> taskManager.update(task1));
 
         assertEquals("Список задач пуст", exception.getMessage());
     }
@@ -767,12 +730,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(epic1);
-                    }
-                });
+                () -> taskManager.update(epic1));
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -785,12 +743,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(subtask1);
-                    }
-                });
+                () -> taskManager.update(subtask1));
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -804,12 +757,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         task1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTask(task1.getId());
-                    }
-                });
+                () -> taskManager.getTask(task1.getId()));
 
         assertEquals("Список задач пуст", exception.getMessage());
     }
@@ -821,12 +769,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         epic1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpic(epic1.getId());
-                    }
-                });
+                () -> taskManager.getEpic(epic1.getId()));
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -839,12 +782,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtask(subtask1.getId());
-                    }
-                });
+                () -> taskManager.getSubtask(subtask1.getId()));
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -854,12 +792,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenGettingAllTasksIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTasks();
-                    }
-                });
+                () -> taskManager.getTasks());
 
         assertEquals("Список задач пуст", exception.getMessage());
     }
@@ -869,12 +802,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenGettingAllEpicsIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpics();
-                    }
-                });
+                () -> taskManager.getEpics());
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -884,12 +812,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenGettingAllSubtasksIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasks();
-                    }
-                });
+                () -> taskManager.getSubtasks());
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -901,12 +824,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         epic1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasksInEpic(epic1.getId());
-                    }
-                });
+                () -> taskManager.getSubtasksInEpic(epic1.getId()));
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -917,12 +835,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final int idEpic1 = taskManager.add(epic1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasksInEpic(idEpic1);
-                    }
-                });
+                () -> taskManager.getSubtasksInEpic(idEpic1));
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -936,12 +849,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         task1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(task1);
-                    }
-                });
+                () -> taskManager.delete(task1));
 
         assertEquals("Список задач пуст", exception.getMessage());
     }
@@ -953,12 +861,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         epic1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(epic1);
-                    }
-                });
+                () -> taskManager.delete(epic1));
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -970,12 +873,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         subtask1.setId(1);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(subtask1);
-                    }
-                });
+                () -> taskManager.delete(subtask1));
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -985,12 +883,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenDeletingAllTasksIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.deleteAllTasks();
-                    }
-                });
+                () -> taskManager.deleteAllTasks());
 
         assertEquals("Список задач пуст", exception.getMessage());
     }
@@ -1000,12 +893,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenDeletingAllEpicIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.deleteAllEpics();
-                    }
-                });
+                () -> taskManager.deleteAllEpics());
 
         assertEquals("Список эпиков пуст", exception.getMessage());
     }
@@ -1015,12 +903,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty() {
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.deleteAllSubtasks();
-                    }
-                });
+                () -> taskManager.deleteAllSubtasks());
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }
@@ -1064,12 +947,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(savedTask1);
-                    }
-                });
+                () -> taskManager.update(savedTask1));
 
         assertEquals("Задачи нет в списке", exception.getMessage());
     }
@@ -1084,12 +962,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(savedEpic1);
-                    }
-                });
+                () -> taskManager.update(savedEpic1));
 
         assertEquals("Эпика нет в списке", exception.getMessage());
     }
@@ -1107,12 +980,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.update(savedSubtask1);
-                    }
-                });
+                () -> taskManager.update(savedSubtask1));
 
         assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
@@ -1129,12 +997,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTask(savedTask1.getId());
-                    }
-                });
+                () -> taskManager.getTask(savedTask1.getId()));
 
         assertEquals("Задачи нет в списке", exception.getMessage());
     }
@@ -1149,12 +1012,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpic(savedEpic1.getId());
-                    }
-                });
+                () -> taskManager.getEpic(savedEpic1.getId()));
 
         assertEquals("Эпика нет в списке", exception.getMessage());
     }
@@ -1172,12 +1030,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtask(savedSubtask1.getId());
-                    }
-                });
+                () -> taskManager.getSubtask(savedSubtask1.getId()));
 
         assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
@@ -1191,12 +1044,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasksInEpic(savedEpic1.getId());
-                    }
-                });
+                () -> taskManager.getSubtasksInEpic(savedEpic1.getId()));
 
         assertEquals("Эпика нет в списке", exception.getMessage());
     }
@@ -1213,12 +1061,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(savedTask1);
-                    }
-                });
+                () -> taskManager.delete(savedTask1));
 
         assertEquals("Задачи нет в списке", exception.getMessage());
     }
@@ -1233,12 +1076,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(savedEpic1);
-                    }
-                });
+                () -> taskManager.delete(savedEpic1));
 
         assertEquals("Эпика нет в списке", exception.getMessage());
     }
@@ -1256,12 +1094,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.delete(savedSubtask1);
-                    }
-                });
+                () -> taskManager.delete(savedSubtask1));
 
         assertEquals("Подзадачи нет в списке", exception.getMessage());
     }

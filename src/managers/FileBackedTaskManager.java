@@ -80,7 +80,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // ЧТЕНИЕ ФАЙЛА
 
     // восстановить менеджер задач из файла с резервной копией
-    static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
         try {
             return new FileBackedTaskManager(file.getPath());
         } catch (NullPointerException e) {

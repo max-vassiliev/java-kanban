@@ -1,5 +1,7 @@
-package managers;
+package tests;
 
+import managers.HistoryManager;
+import managers.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
@@ -10,10 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class HistoryManagerTest<T extends HistoryManager> {
+public abstract class HistoryManagerTest<InMemoryHistoryManagerTest> {
 
     protected static HistoryManager historyManager;
-    protected static TaskManager taskManager;
     protected static Task task1;
     protected static Epic epic1;
     protected static Subtask subtask1;

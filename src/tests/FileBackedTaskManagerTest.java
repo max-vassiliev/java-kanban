@@ -1,8 +1,8 @@
-package managers;
+package tests;
 
+import managers.FileBackedTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest extends TaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     protected static String HOME = "resources";
     protected static String FILE = "backup-s7.csv";
@@ -34,7 +34,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @BeforeEach
     // очистить содержимое файла
-    private void cleanUp()  {
+    public void cleanUp()  {
         try (FileWriter fileWriter = new FileWriter(new File(HOME, FILE))) {
             fileWriter.write("");
         } catch (IOException exception) {
@@ -78,30 +78,15 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
         final NullPointerException exceptionTasks = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getTasks();
-                    }
-                });
+                () -> taskManager.getTasks());
 
         final NullPointerException exceptionEpics = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getEpics();
-                    }
-                });
+                () -> taskManager.getEpics());
 
         final NullPointerException exceptionSubtasks = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasks();
-                    }
-                });
+                () -> taskManager.getSubtasks());
 
         assertEquals("Список задач пуст", exceptionTasks.getMessage());
         assertEquals("Список эпиков пуст", exceptionEpics.getMessage());
@@ -159,12 +144,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         Epic savedEpic1 = epics.get(0);
         final NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        taskManager.getSubtasksInEpic(savedEpic1.getId());
-                    }
-                });
+                () -> taskManager.getSubtasksInEpic(savedEpic1.getId()));
 
         assertEquals("Список подзадач пуст", exception.getMessage());
     }

@@ -1,9 +1,13 @@
-package tasks;
+package tests;
 
 import managers.InMemoryTaskManager;
 import managers.TaskManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,7 +55,7 @@ class EpicTest {
     // пустой список подзадач
     @Test
     public void shouldHaveStatusNewWhenNoSubtasks() {
-        assertEquals(epic.getStatus(), Status.NEW);
+        Assertions.assertEquals(epic.getStatus(), Status.NEW);
     }
 
     // всех подзадачи со статусом NEW

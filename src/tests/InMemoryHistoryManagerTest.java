@@ -1,10 +1,13 @@
-package managers;
+package tests;
 
+import managers.InMemoryHistoryManager;
+import managers.InMemoryTaskManager;
+import tests.InMemoryTaskManagerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tests.HistoryManagerTest;
 
-class InMemoryHistoryManagerTest extends HistoryManagerTest  {
-
+class InMemoryHistoryManagerTest extends HistoryManagerTest {
 
     protected InMemoryHistoryManagerTest() {
         super(new InMemoryHistoryManager(), new InMemoryTaskManager());
