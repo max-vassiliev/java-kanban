@@ -2,10 +2,8 @@ package tests;
 
 import managers.InMemoryHistoryManager;
 import managers.InMemoryTaskManager;
-import tests.InMemoryTaskManagerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tests.HistoryManagerTest;
 
 class InMemoryHistoryManagerTest extends HistoryManagerTest {
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class HistoryManagerTest<InMemoryHistoryManagerTest> {
+public abstract class HistoryManagerTest {
 
     protected static HistoryManager historyManager;
     protected static Task task1;
