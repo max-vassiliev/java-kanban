@@ -1,9 +1,11 @@
 package managers;
 
 import tasks.*;
+import utilities.TaskIdComparator;
 import utilities.TaskPriorityComparator;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -23,6 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
         int id = nextId++;
         task.setId(id);
         task.setType(TaskType.TASK);
+        if (task.getStatus() == null) task.setStatus(Status.NEW);
         checkOverlap(task);
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
@@ -46,6 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
         int id = nextId++;
         subtask.setId(id);
         subtask.setType(TaskType.SUBTASK);
+        if (subtask.getStatus() == null) subtask.setStatus(Status.NEW); // TODO проверить работу
         checkOverlap(subtask);
         setEpicSubtaskRelation(subtask);
         subtasks.put(subtask.getId(), subtask);
@@ -152,6 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
         return subtasksList;
     }
 
+
     // УДАЛИТЬ
 
     // удалить задачу
@@ -228,9 +233,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (int id : epics.keySet()) {
             Epic epic = epics.get(id);
-            epic.setStartTime(null);
+            epic.setStartTime((LocalDateTime) null); // TODO убрать (LocalDateTime), если не пригодится
             epic.setEndTime(null);
-            epic.setDuration(null);
+            epic.setDuration((Duration) null);      // TODO убрать (Duration), если не пригодится
             epic.removeAllRelatedSubtasks();
             epic.setStatus(Status.NEW);
         }

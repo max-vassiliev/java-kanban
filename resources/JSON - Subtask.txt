@@ -1,0 +1,45 @@
+// TODO потом удалить
+{
+	"epicId": 5,
+	"epicStartTime": false,
+	"epicEndTime": true,
+	"id": 7,
+	"title": "Epic1 SubTask2",
+	"description": "Description epic1 subTask2",
+	"status": "IN_PROGRESS",
+	"type": "SUBTASK",
+	"startTime": {
+		"date": {
+			"year": 2022,
+			"month": 10,
+			"day": 19
+		},
+		"time": {
+			"hour": 10,
+			"minute": 0,
+			"second": 0,
+			"nano": 0
+		}
+	},
+	"duration": {
+		"seconds": 4500,
+		"nanos": 0
+	},
+	"backupStartTime": {
+		"date": {
+			"year": 2022,
+			"month": 10,
+			"day": 19
+		},
+		"time": {
+			"hour": 10,
+			"minute": 0,
+			"second": 0,
+			"nano": 0
+		}
+	},
+	"backupDuration": {
+		"seconds": 4500,
+		"nanos": 0
+	}
+}

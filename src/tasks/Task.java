@@ -11,6 +11,7 @@ public class Task {
     protected String description;
     protected Status status;
     protected TaskType type;
+
     protected LocalDateTime startTime;
     protected Duration duration;
     protected LocalDateTime backupStartTime;
@@ -20,9 +21,11 @@ public class Task {
     protected static final int MINUTES_IN_HOUR = 60;
 
 
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
+        status = Status.NEW;
     }
 
     public Task(String title, String description, String statusIn) {
@@ -113,6 +116,19 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    // TODO тестирую
+    public void setStartTime(String startTime) {
+        this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
+    }
+
+    // TODO тестирую
+    public void setDuration(String duration) {
+        String[] durationSplit = duration.split(":");
+        int durationHours = Integer.parseInt(durationSplit[0]);
+        int durationMinutes = Integer.parseInt(durationSplit[1]);
+        this.duration = Duration.ofMinutes((long) durationHours * MINUTES_IN_HOUR + durationMinutes);
     }
 
     public LocalDateTime getBackupStartTime() {
