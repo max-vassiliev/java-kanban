@@ -16,7 +16,6 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +34,10 @@ public class HttpTaskServer {
     public static void main(String[] args) {
         new HttpTaskServer();
     }
+
+    // TODO для дат воспользоваться registerTypeAdapter — ссылка ниже
+    // https://practicum.yandex.ru/trainer/java-developer/lesson/8f627126-5a31-4250-ac4b-d4dd0241eb6d/
+
 
     public HttpTaskServer() {
         taskManager = (FileBackedTaskManager) Managers.getFileBackedTaskManager(FILE);
