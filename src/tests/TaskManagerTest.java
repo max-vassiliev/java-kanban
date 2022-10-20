@@ -237,13 +237,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.getTask(idTask1);
         taskManager.delete(task1);
-
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getTasks());
-
-        assertEquals("Список задач пуст", exception.getMessage());
+        List<Task> tasks = taskManager.getTasks();
         List<Task> tasksInHistory = taskManager.getHistory();
+        assertEquals(0, tasks.size());
         assertEquals(0, tasksInHistory.size());
     }
 
@@ -264,24 +260,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.delete(savedEpic);
 
+        List<Epic> epics = taskManager.getEpics();
+        List<Subtask> subtasks = taskManager.getSubtasks();
         List<Task> history = taskManager.getHistory();
         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
 
+        assertEquals(0, epics.size(), "Список эпиков не пустой");
+        assertEquals(0, subtasks.size(), "Список подзадач не пустой");
         assertEquals(0, history.size(), "История не пустая");
         assertEquals(0, prioritizedTasks.size(), "Список приоритетных задач не пуст");
-
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getEpics());
-
-        assertEquals("Список эпиков пуст", exception.getMessage());
-
-
-        final NullPointerException exception2 = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getSubtasks());
-
-        assertEquals("Список подзадач пуст", exception2.getMessage());
     }
 
     // удалить подзадачу
@@ -330,18 +317,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteAllTasks();
 
+        List<Task> tasks = taskManager.getTasks();
         List<Task> history = taskManager.getHistory();
         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
 
+        assertEquals(0, tasks.size(), "Список задач не пустой");
         assertEquals(0, history.size(), "Остались лишние задачи в истории");
         assertEquals(0, prioritizedTasks.size(), "Неверное количество приоритетных задач");
-
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getTasks());
-
-        assertEquals("Список задач пуст", exception.getMessage());
-
     }
 
     // удалить все эпики
@@ -367,21 +349,15 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteAllEpics();
 
+        List<Epic> epics = taskManager.getEpics();
+        List<Subtask> subtasks = taskManager.getSubtasks();
         List<Task> history = taskManager.getHistory();
         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
 
+        assertEquals(0, epics.size(), "Список эпиков не пустой");
+        assertEquals(0, subtasks.size(), "Список подзадач не пустой");
         assertEquals(0, history.size(), "Остались лишние задачи в истории");
         assertEquals(0, prioritizedTasks.size(), "Неверное количество приоритетных задач");
-
-        final NullPointerException exception = assertThrows(NullPointerException.class,
-                                                            taskManager::getEpics);
-
-        assertEquals("Список эпиков пуст", exception.getMessage());
-
-        final NullPointerException exception2 = assertThrows(NullPointerException.class,
-                                                             taskManager::getSubtasks);
-
-        assertEquals("Список подзадач пуст", exception2.getMessage());
     }
 
     // удалить все подзадачи
@@ -407,22 +383,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteAllSubtasks();
 
+        List<Subtask> subtasks = taskManager.getSubtasks();
         List<Epic> epics = taskManager.getEpics();
         List<Task> history = taskManager.getHistory();
         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
 
+        assertEquals(0, subtasks.size(), "Список подзадач не пустой");
         assertEquals(2, history.size(), "Остались лишние задачи в истории");
 
         assertEquals(2, epics.size(), "Количество эпиков не соответствует ожидаемому");
         assertEquals(Status.NEW, epics.get(0).getStatus(), "Неверный статус эпика");
         assertEquals(Status.NEW, epics.get(1).getStatus(), "Неверный статус эпика");
         assertEquals(0, prioritizedTasks.size(), "Неверное количество приоритетных задач");
-
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                taskManager::getSubtasks);
-
-        assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
     // ДАТА, ВРЕМЯ, ПРОДОЛЖИТЕЛЬНОСТЬ
@@ -455,8 +427,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Duration expectedEpicDuration = Duration.between(savedSubtask1.getStartTime(),
                                                          savedSubtask2.getEndTime().get());
 
-        assertTrue(savedSubtask1.isEpicStartTime(), "Подзадача должна быть начальной для эпика");
-        assertTrue(savedSubtask2.isEpicEndTime(), "Подзадача должна быть завершающей для эпика");
+        assertTrue(savedSubtask1.getIsEpicStartTime(), "Подзадача должна быть начальной для эпика");
+        assertTrue(savedSubtask2.getIsEpicEndTime(), "Подзадача должна быть завершающей для эпика");
         assertEquals(savedSubtask1.getStartTime(), savedEpic1.getStartTime(),
                                                    "Неверное время начала эпика");
         assertEquals(savedSubtask2.getEndTime().get(), savedEpic1.getEndTime().get(),
@@ -719,7 +691,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.update(task1));
 
-        assertEquals("Список задач пуст", exception.getMessage());
+        assertEquals("Задачи нет в списке", exception.getMessage());
     }
 
     // обновить эпик в пустом списке
@@ -732,7 +704,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.update(epic1));
 
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        assertEquals("Эпика нет в списке", exception.getMessage());
     }
 
     // обновить подзадачу в пустом списке
@@ -745,7 +717,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.update(subtask1));
 
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
 
     // ПОЛУЧИТЬ
@@ -759,7 +731,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.getTask(task1.getId()));
 
-        assertEquals("Список задач пуст", exception.getMessage());
+        assertEquals("Задачи нет в списке", exception.getMessage());
     }
 
     // получить эпик из пустого списка
@@ -771,7 +743,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.getEpic(epic1.getId()));
 
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        assertEquals("Эпика нет в списке", exception.getMessage());
     }
 
     // получить подзадачу из пустого списка
@@ -784,37 +756,28 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.getSubtask(subtask1.getId()));
 
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
 
     // получить все задачи из пустого списка
     @Test
     void shouldReturnNullWhenGettingAllTasksIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getTasks());
-
-        assertEquals("Список задач пуст", exception.getMessage());
+        List<Task> tasks = taskManager.getTasks();
+        assertEquals(0, tasks.size(), "Список задач не пуст");
     }
 
     // получить все эпики из пустого списка
     @Test
     void shouldReturnNullWhenGettingAllEpicsIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getEpics());
-
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        List<Epic> epics = taskManager.getEpics();
+        assertEquals(0, epics.size(), "Список эпиков не пустой");
     }
 
     // получить все подзадачи из пустого списка
     @Test
     void shouldReturnNullWhenGettingAllSubtasksIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getSubtasks());
-
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        List<Subtask> subtasks = taskManager.getSubtasks();
+        assertEquals(0, subtasks.size(), "Список подзадач не пустой");
     }
 
     // получить все подзадачи эпика, если пусты списки эпиков и подзадач
@@ -826,18 +789,23 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.getSubtasksInEpic(epic1.getId()));
 
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        assertEquals("Эпика нет в списке", exception.getMessage());
     }
 
     // получить все подзадачи эпика, если пуст список подзадач в менеджере
     void shouldReturnNullWhenGettingEpicSubtasksIfSubtaskListIsEmpty() {
         createEpic1();
         final int idEpic1 = taskManager.add(epic1);
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getSubtasksInEpic(idEpic1));
+        List<Subtask> subtasks = taskManager.getSubtasksInEpic(idEpic1);
+        assertNull(subtasks);
+//        List<Subtask> subtasks = taskManager.getSubtasksInEpic(idEpic1);
+//        assertEquals(0, subtasks.size());
 
-        assertEquals("Список подзадач пуст", exception.getMessage());
+//        final NullPointerException exception = assertThrows(
+//                NullPointerException.class,
+//                () -> taskManager.getSubtasksInEpic(idEpic1));
+//
+//        assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
     // УДАЛИТЬ
@@ -851,7 +819,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.delete(task1));
 
-        assertEquals("Список задач пуст", exception.getMessage());
+        assertEquals("Задачи нет в списке", exception.getMessage());
     }
 
     // удалить эпик из пустого списка
@@ -863,7 +831,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.delete(epic1));
 
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        assertEquals("Эпика нет в списке", exception.getMessage());
     }
 
     // удалить подзадачу из пустого списка
@@ -875,37 +843,37 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 NullPointerException.class,
                 () -> taskManager.delete(subtask1));
 
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        assertEquals("Подзадачи нет в списке", exception.getMessage());
     }
 
     // удалить все задачи из пустого списка
     @Test
-    void shouldReturnNullWhenDeletingAllTasksIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.deleteAllTasks());
+    void shouldDoNothingWhenDeletingAllTasksIfListIsEmpty() {
+        List<Task> tasksBeforeDeleted = taskManager.getTasks();
+        taskManager.deleteAllTasks();
+        List<Task> tasksAfterDeleted = taskManager.getTasks();
 
-        assertEquals("Список задач пуст", exception.getMessage());
+        assertEquals(tasksBeforeDeleted, tasksAfterDeleted, "Списки разные");
     }
 
     // удалить все эпики из пустого списка
     @Test
-    void shouldReturnNullWhenDeletingAllEpicIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.deleteAllEpics());
+    void shouldDoNothingWhenDeletingAllEpicIfListIsEmpty() {
+        List<Epic> epicsBeforeDeleted = taskManager.getEpics();
+        taskManager.deleteAllEpics();
+        List<Epic> epicsAfterDeleted = taskManager.getEpics();
 
-        assertEquals("Список эпиков пуст", exception.getMessage());
+        assertEquals(epicsBeforeDeleted, epicsAfterDeleted, "Списки разные");
     }
 
     // удалить все подзадачи из пустого списка
     @Test
-    void shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty() {
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.deleteAllSubtasks());
+    void shouldDoNothingWhenDeletingAllSubtasksIfListIsEmpty() {
+        List<Subtask> subtasksBeforeDeleted = taskManager.getSubtasks();
+        taskManager.deleteAllSubtasks();
+        List<Subtask> subtasksAfterDeleted = taskManager.getSubtasks();
 
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        assertEquals(subtasksBeforeDeleted, subtasksAfterDeleted, "Списки разные");
     }
 
     // ДОПОЛНИТЕЛЬНО

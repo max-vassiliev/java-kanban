@@ -43,6 +43,8 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksInEpic(int epicId);
 
+    List<Task> getAll();
+
     // удалить задачу
 
     void delete(Task task);

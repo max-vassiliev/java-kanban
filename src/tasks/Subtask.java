@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 public class Subtask extends Task {
     protected String epicTitle;
     protected int epicId;
-    protected boolean epicStartTime = false;
-    protected boolean epicEndTime = false;
+    protected boolean isEpicStartTime = false;
+    protected boolean isEpicEndTime = false;
 
     public Subtask(String title, String description, String status, String relatedEpicTitle) {
         super(title, description, status);
@@ -27,10 +27,10 @@ public class Subtask extends Task {
 
     // конструктор для чтения из файла
     public Subtask(String title, String status, String description, int relatedEpicId,
-                   LocalDateTime startTime, Duration duration, boolean epicStartTime, boolean epicEndTime) {
+                   LocalDateTime startTime, Duration duration, boolean isEpicStartTime, boolean isEpicEndTime) {
         super(title, status, description, startTime, duration);
-        this.epicStartTime = epicStartTime;
-        this.epicEndTime = epicEndTime;
+        this.isEpicStartTime = isEpicStartTime;
+        this.isEpicEndTime = isEpicEndTime;
         this.epicId = relatedEpicId;
     }
 
@@ -50,20 +50,20 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public boolean isEpicStartTime() {
-        return epicStartTime;
+    public boolean getIsEpicStartTime() {
+        return isEpicStartTime;
     }
 
-    public void setEpicStartTime(boolean epicStartTime) {
-        this.epicStartTime = epicStartTime;
+    public void setIsEpicStartTime(boolean isEpicStartTime) {
+        this.isEpicStartTime = isEpicStartTime;
     }
 
-    public boolean isEpicEndTime() {
-        return epicEndTime;
+    public boolean getIsEpicEndTime() {
+        return isEpicEndTime;
     }
 
-    public void setEpicEndTime(boolean epicEndTime) {
-        this.epicEndTime = epicEndTime;
+    public void setIsEpicEndTime(boolean isEpicEndTime) {
+        this.isEpicEndTime = isEpicEndTime;
     }
 
     @Override

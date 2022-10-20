@@ -70,27 +70,17 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void readFromEmptyFile() {
         initializeTest();
 
+        List<Task> tasks = taskManager.getTasks();
+        List<Task> epics = taskManager.getTasks();
+        List<Task> subtasks = taskManager.getTasks();
         List<Task> history = taskManager.getHistory();
         List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
 
+        assertEquals(0, tasks.size(), "Список задач не пуст");
+        assertEquals(0, epics.size(), "Список эпиков не пуст");
+        assertEquals(0, subtasks.size(), "Список подзадач не пуст");
         assertEquals(0, history.size(), "История не пустая");
         assertEquals(0, prioritizedTasks.size(), "Список приоритетных задач не пуст");
-
-        final NullPointerException exceptionTasks = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getTasks());
-
-        final NullPointerException exceptionEpics = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getEpics());
-
-        final NullPointerException exceptionSubtasks = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getSubtasks());
-
-        assertEquals("Список задач пуст", exceptionTasks.getMessage());
-        assertEquals("Список эпиков пуст", exceptionEpics.getMessage());
-        assertEquals("Список подзадач пуст", exceptionSubtasks.getMessage());
     }
 
     // чтение из файла с данными: эпик с подзадачами
@@ -142,11 +132,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         assertEquals(1, epics.size(), "Неверное количество эпиков в списке");
 
         Epic savedEpic1 = epics.get(0);
-        final NullPointerException exception = assertThrows(
-                NullPointerException.class,
-                () -> taskManager.getSubtasksInEpic(savedEpic1.getId()));
-
-        assertEquals("Список подзадач пуст", exception.getMessage());
+        List<Subtask> subtasksInEpic1 = taskManager.getSubtasksInEpic(savedEpic1.getId());
+        assertNull(subtasksInEpic1, "Список задач должен быть пустым");
     }
 
     // чтение из файла с данными: пустая история
@@ -809,11 +796,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     // удалить все задачи из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllTasksIfListIsEmpty() {
-        String expectedContent = "";
+    void shouldDoNothingWhenDeletingAllTasksIfListIsEmpty() {
+        String expectedContent =
+                "id,type,name,status,description,starttime,duration,epic,epicStartTime,epicEndTime\n\n";
 
         initializeTest();
-        super.shouldReturnNullWhenDeletingAllTasksIfListIsEmpty();
+        super.shouldDoNothingWhenDeletingAllTasksIfListIsEmpty();
 
         String savedContent = readFile();
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
@@ -821,11 +809,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     // удалить все эпики из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllEpicIfListIsEmpty() {
-        String expectedContent = "";
+    void shouldDoNothingWhenDeletingAllEpicIfListIsEmpty() {
+        String expectedContent =
+                "id,type,name,status,description,starttime,duration,epic,epicStartTime,epicEndTime\n\n";
 
         initializeTest();
-        super.shouldReturnNullWhenDeletingAllEpicIfListIsEmpty();
+        super.shouldDoNothingWhenDeletingAllEpicIfListIsEmpty();
 
         String savedContent = readFile();
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");
@@ -833,11 +822,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     // удалить все подзадачи из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty() {
-        String expectedContent = "";
+    void shouldDoNothingWhenDeletingAllSubtasksIfListIsEmpty() {
+        String expectedContent =
+                "id,type,name,status,description,starttime,duration,epic,epicStartTime,epicEndTime\n\n";
 
         initializeTest();
-        super.shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty();
+        super.shouldDoNothingWhenDeletingAllSubtasksIfListIsEmpty();
 
         String savedContent = readFile();
         assertEquals(expectedContent, savedContent, "Данные в файл записаны неверно");

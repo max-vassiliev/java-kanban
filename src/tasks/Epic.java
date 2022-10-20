@@ -26,6 +26,7 @@ public class Epic extends Task {
 
     // добавить ID связанной подзадачи
     public void addRelatedSubtask(int subtaskId) {
+        if (relatedSubtasks == null) relatedSubtasks = new ArrayList<>();
         this.relatedSubtasks.add(subtaskId);
     }
 
@@ -42,7 +43,7 @@ public class Epic extends Task {
         return relatedSubtasks;
     }
 
-    public void setRelatedSubtasks(ArrayList<Integer> relatedSubtasks) {
+    public void setRelatedSubtasks(List<Integer> relatedSubtasks) {
         this.relatedSubtasks = relatedSubtasks;
     }
 

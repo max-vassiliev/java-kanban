@@ -235,20 +235,20 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     // удалить все задачи из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllTasksIfListIsEmpty() {
-        super.shouldReturnNullWhenDeletingAllTasksIfListIsEmpty();
+    void shouldDoNothingWhenDeletingAllTasksIfListIsEmpty() {
+        super.shouldDoNothingWhenDeletingAllTasksIfListIsEmpty();
     }
 
     // удалить все эпики из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllEpicIfListIsEmpty() {
-        super.shouldReturnNullWhenDeletingAllEpicIfListIsEmpty();
+    void shouldDoNothingWhenDeletingAllEpicIfListIsEmpty() {
+        super.shouldDoNothingWhenDeletingAllEpicIfListIsEmpty();
     }
 
     // удалить все подзадачи из пустого списка
     @Test @Override
-    void shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty() {
-        super.shouldReturnNullWhenDeletingAllSubtasksIfListIsEmpty();
+    void shouldDoNothingWhenDeletingAllSubtasksIfListIsEmpty() {
+        super.shouldDoNothingWhenDeletingAllSubtasksIfListIsEmpty();
     }
 
     // ДОПОЛНИТЕЛЬНО

@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 import com.google.gson.Gson;
-import managers.FileBackedTaskManager;
-import managers.Managers;
 import managers.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
@@ -24,34 +22,27 @@ import java.util.List;
 
 public class HttpTaskServer {
 
-    private static final int PORT = 8080; // TODO возможно, перенести куда-то еще
-    private static final String FILE = "resources/backup-s8.csv"; // TODO удалить, когда удалим FileBackedTaskManager
-    public static TaskManager taskManager;
+    private static TaskManager taskManager;
     private HttpServer httpServer;
     private static final Gson gson = new Gson();
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    public static void main(String[] args) {
-        new HttpTaskServer();
-    }
 
-    // TODO для дат воспользоваться registerTypeAdapter — ссылка ниже
-    // https://practicum.yandex.ru/trainer/java-developer/lesson/8f627126-5a31-4250-ac4b-d4dd0241eb6d/
+    public HttpTaskServer(TaskManager taskManager) {
+        HttpTaskServer.taskManager = taskManager;
 
-
-    public HttpTaskServer() {
-        taskManager = (FileBackedTaskManager) Managers.getFileBackedTaskManager(FILE);
         try {
             httpServer = HttpServer.create();
-            httpServer.bind(new InetSocketAddress(PORT), 0);
+            httpServer.bind(new InetSocketAddress("localhost", 8080), 0);
             httpServer.createContext("/tasks", new TaskHandler());
-            httpServer.start(); // TODO добавить метод остановки сервера
-
-            //TODO не знаю, нужно ли
-            System.out.println("HTTP-сервер запущен на " + PORT + " порту");
-        } catch (IOException e) {
-            System.out.println("Ошибка при создании сервера");
+            httpServer.start();
+        } catch (IOException ignored) {
         }
+    }
+
+    // остановить сервер
+    public void stop() {
+        httpServer.stop(0);
     }
 
     static class TaskHandler implements HttpHandler {
@@ -67,21 +58,28 @@ public class HttpTaskServer {
                 case "GET":
                     response = handleGetRequest(uri);
                     break;
+
                 case "POST":
                     InputStream inputStream = httpExchange.getRequestBody();
                     String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-                    response = handlePostRequest(uri, body);
+                    try {
+                        response = handlePostRequest(uri, body);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 case "DELETE":
                     response = handleDeleteRequest(uri);
                     break;
             }
 
-            if (response != null) statusCode = 200;
+            if (response == null) {
+                httpExchange.sendResponseHeaders(statusCode, 0);
+                return;
+            }
+            statusCode = 200;
+
             httpExchange.sendResponseHeaders(statusCode, 0);
-
-            if (response == null) return;
-
             try (OutputStream os = httpExchange.getResponseBody()) {
                 os.write(response.getBytes());
             }
@@ -91,8 +89,8 @@ public class HttpTaskServer {
         private String handleGetRequest(String uri) {
             // получить все задачи в порядке приоритета
             if ("/tasks/".equals(uri)) {
-                List<Task> prioritizedTasks = taskManager.getPrioritizedTasks();
-                return gson.toJson(prioritizedTasks);
+                List<Task> allTasks = taskManager.getAll();
+                return gson.toJson(allTasks);
             }
 
             String[] parts = uri.split("/");
@@ -130,11 +128,17 @@ public class HttpTaskServer {
                 return gson.toJson(history);
             }
 
+            // получить список задачи в порядке приоритета
+            if ("priority".equals(type)) {
+                List<Task> priority = taskManager.getPrioritizedTasks();
+                return gson.toJson(priority);
+            }
+
             return null;
         }
 
         // обработка запросов POST
-        private String handlePostRequest(String uri, String body) {
+        private String handlePostRequest(String uri, String body) throws InterruptedException {
             String[] parts = uri.split("/");
             String type = parts[2];
 
@@ -145,19 +149,19 @@ public class HttpTaskServer {
                 if ("task".equals(type)) {
                     Task task = gson.fromJson(body, Task.class);
                     taskManager.update(task);
-                    Task taskUpdated = taskManager.getTask(id);  // TODO можно ли без get?
+                    Task taskUpdated = taskManager.getTask(id);
                     return gson.toJson(taskUpdated);
                 }
                 if ("epic".equals(type)) {
                     Epic epic = gson.fromJson(body, Epic.class);
                     taskManager.update(epic);
-                    Epic epicUpdated = taskManager.getEpic(id);  // TODO можно ли без get?
+                    Epic epicUpdated = taskManager.getEpic(id);
                     return gson.toJson(epicUpdated);
                 }
                 if ("subtask".equals(type)) {
                     Subtask subtask = gson.fromJson(body, Subtask.class);
                     taskManager.update(subtask);
-                    Subtask subtaskUpdated = taskManager.getSubtask(id);  // TODO можно ли без get?
+                    Subtask subtaskUpdated = taskManager.getSubtask(id);
                     return gson.toJson(subtaskUpdated);
                 }
             }
@@ -166,13 +170,13 @@ public class HttpTaskServer {
             if ("task".equals(type)) {
                 Task task = gson.fromJson(body, Task.class);
                 int id = taskManager.add(task);
-                Task taskSaved = taskManager.getTask(id);  // TODO убрать, если не нужно get
+                Task taskSaved = taskManager.getTask(id);
                 return gson.toJson(taskSaved);
             }
             if ("epic".equals(type)) {
                 Epic epic = gson.fromJson(body, Epic.class);
                 int id = taskManager.add(epic);
-                Epic epicSaved = taskManager.getEpic(id);  // TODO убрать, если не нужен get
+                Epic epicSaved = taskManager.getEpic(id);
                 return gson.toJson(epicSaved);
             }
             if ("subtask".equals(type)) {
@@ -187,7 +191,6 @@ public class HttpTaskServer {
 
         // обработка запросов DELETE
         private String handleDeleteRequest(String uri) {
-            String response = null;
             String[] parts = uri.split("/");
             String type = parts[2];
 
@@ -225,8 +228,7 @@ public class HttpTaskServer {
                 taskManager.deleteAllSubtasks();
                 return "Все подзадачи удалены";
             }
-
-            return response;
+            return null;
         }
 
         // получить ID из строки

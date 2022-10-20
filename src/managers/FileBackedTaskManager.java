@@ -20,7 +20,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static final String HOME = "resources";
-    private static final String BACKUP_FILE = "backup-s7.csv";
+    private static final String BACKUP_FILE = "backup-s8.csv";
     private static final String ITEM_SEPARATOR = ",";
     private static final String LINE_SEPARATOR = "\n";
     private static final String SECTION_SEPARATOR = "\n\n";
@@ -31,14 +31,44 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(String historyPath) {
         this.historyPath = historyPath;
-        String content = readFile(new File(historyPath));
+        load(historyPath);
+    }
+
+    public static void main(String[] args) {
+        FileBackedTaskManager taskManager = loadFromFile(new File(HOME, BACKUP_FILE));
+    }
+
+
+    // ЧТЕНИЕ ФАЙЛА
+
+    // восстановить менеджер задач из файла с резервной копией
+    public static FileBackedTaskManager loadFromFile(File file) {
+        try {
+            return new FileBackedTaskManager(file.getPath());
+        } catch (NullPointerException e) {
+            System.out.println("Ошибка при загрузке сохраненных данных");
+            return null;
+        }
+    }
+
+    // получить содержимое файла
+    String read(String path) {
+        try {
+            return Files.readString(Path.of(path));
+        } catch (IOException e) {
+            System.out.println("Файл не найден");
+            return null;
+        }
+    }
+
+    // загрузить и обработать данные
+    public void load(String path) {
+        String content = read(path);
+        if (content.isBlank()) return;
         StringBuilder sb = new StringBuilder(content);
 
         // восстанавливаем список задач и историю просмотров
         try {
-            if (content.isBlank()) {
-                return;
-            }
             String[] split = content.split(SECTION_SEPARATOR);
             int sectionBreak = content.indexOf(SECTION_SEPARATOR);
             sb.delete(0, sectionBreak + SECTION_SEPARATOR.length());
@@ -67,34 +97,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             System.out.println("Ошибка при обработке сохраненных задач");
-        }
-    }
-
-    public static void main(String[] args) {
-
-        FileBackedTaskManager taskManager = loadFromFile(new File(HOME, BACKUP_FILE));
-
-    }
-
-
-    // ЧТЕНИЕ ФАЙЛА
-
-    // восстановить менеджер задач из файла с резервной копией
-    public static FileBackedTaskManager loadFromFile(File file) {
-        try {
-            return new FileBackedTaskManager(file.getPath());
-        } catch (NullPointerException e) {
-            System.out.println("Ошибка при загрузке сохраненных данных");
-            return null;
-        }
-    }
-
-    // получить содержание файла
-    String readFile(File file) {
-        try {
-            return Files.readString(Path.of(file.getPath()));
-        } catch (IOException e) {
-            return null;
         }
     }
 
@@ -150,9 +152,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // восстановить список задач в истории просмотров из резервной копии
     static List<Integer> historyFromString(String historyData) {
-        if (historyData == null) {
-            return null;
-        }
+        if (historyData == null) return null;
 
         String[] split = historyData.split(ITEM_SEPARATOR);
         List<Integer> history = new ArrayList<>();
@@ -164,7 +164,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // восстановить время начала
-    public LocalDateTime parseStartTime(String str) {
+    LocalDateTime parseStartTime(String str) {
         if (str.equals("null")) {
             return null;
         } else {
@@ -173,7 +173,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // восстановить продолжительность
-    public Duration parseDuration(String str) {
+    Duration parseDuration(String str) {
         if (str.equals("null")) {
             return null;
         } else {
@@ -216,7 +216,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         subtask.getId(), subtask.getType(), subtask.getTitle(),
                         subtask.getStatus(), subtask.getDescription(),
                         subtask.getStartTime(), subtask.getDuration(),
-                        subtask.getEpicId(), subtask.isEpicStartTime(), subtask.isEpicEndTime());
+                        subtask.getEpicId(), subtask.getIsEpicStartTime(), subtask.getIsEpicEndTime());
                 break;
             default:
                 result = null;
@@ -230,9 +230,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         List<Task> history = manager.getHistory();
         StringBuilder sb = new StringBuilder();
 
-        if (history.isEmpty()) {
-            return "";
-        }
+        if (history.isEmpty()) return "";
+
         for (Task task : history) {
             sb.append(task.getId()).append(ITEM_SEPARATOR);
         }
@@ -240,7 +239,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return sb.toString();
     }
 
+    // ---------------------------------------------
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
+    // ---------------------------------------------
 
     // отсортировать задачи по ID
     public List<Task> sortTasks() {
