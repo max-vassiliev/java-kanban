@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import http.HttpTaskServer;
 import http.KVServer;
 import http.KVTaskClient;
 import managers.HTTPTaskManager;
@@ -29,28 +28,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-// extends TaskManagerTest<HTTPTaskManager>
 class HTTPTaskManagerTest {
 
     protected static HTTPTaskManager taskManager;
     protected static String serverUri = "http://localhost:8078/";
     private static final int STATUS_CODE_200 = 200;
-
     private static final String HOST = "http://localhost:8080/";
-
     protected KVServer kvServer;
-
-    protected HttpTaskServer httpTaskServer2; // TODO переименовать
-
     protected static Task task1;
     protected static Epic epic1;
     protected static Subtask subtask1;
     protected static Subtask subtask2;
-
-
     Gson gson = new Gson();
 
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     protected HTTPTaskManagerTest() {
         taskManager = new HTTPTaskManager(serverUri);
@@ -81,7 +71,7 @@ class HTTPTaskManagerTest {
     }
 
     // ---------------------------------------------
-    // ТЕСТЫ — Сервер
+    // ТЕСТЫ
     // ---------------------------------------------
 
     // загрузить задачу с сервера

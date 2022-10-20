@@ -196,9 +196,6 @@ public class InMemoryTaskManager implements TaskManager {
         Epic relatedEpic = epics.get(subtask.getEpicId());
         prioritizedTasks.remove(subtask);
         relatedEpic.removeRelatedSubtask(subtask.getId());
-
-        System.out.println(relatedEpic); // TODO удалить 👻
-
         resetEpicStartEndTime(relatedEpic);
         checkEpicStatus(relatedEpic);
         historyManager.remove(subtask.getId());
@@ -250,9 +247,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (int id : epics.keySet()) {
             Epic epic = epics.get(id);
-            epic.setStartTime((LocalDateTime) null); // TODO убрать (LocalDateTime), если не пригодится
+            epic.setStartTime((LocalDateTime) null);
             epic.setEndTime(null);
-            epic.setDuration((Duration) null);      // TODO убрать (Duration), если не пригодится
+            epic.setDuration((Duration) null);
             epic.setStartTimeSubtask(0);
             epic.setEndTimeSubtask(0);
             epic.removeAllRelatedSubtasks();
@@ -471,31 +468,6 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // ПРОВЕРКА УСЛОВИЙ
-
-
-    // TODO удалить метод и поправить в тестах
-    // проверить, что список задач не пуст
-//    protected void checkIfTaskMapIsEmpty() {
-//        if (tasks.isEmpty()){
-//            throw new NullPointerException("Список задач пуст");
-//        }
-//    }
-
-    // TODO удалить метод и поправить в тестах
-    // проверить, что список эпиков не пуст
-//    protected void checkIfEpicMapIsEmpty() {
-//        if (epics.isEmpty()){
-//            throw new NullPointerException("Список эпиков пуст");
-//        }
-//    }
-
-    // TODO удалить метод и поправить в тестах
-    // проверить, что список подзадач не пуст
-//    protected void checkIfSubtaskMapIsEmpty() {
-//        if (subtasks.isEmpty()) {
-//            throw new NullPointerException("Список подзадач пуст");
-//        }
-//    }
 
     // проверить, что задача есть в списке задач
     protected void checkTaskInMap(int id) {
