@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EpicTest {
 
     private static TaskManager taskManager;
-
     private static Epic epic;
     private static Subtask subtask1;
     private static Subtask subtask2;

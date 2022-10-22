@@ -85,6 +85,12 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
+                if ("[{\"isNull\":true}]".equals(value)) {
+                    data.remove(key);
+                    System.out.println("Данные по ключу " + key + " удалены!");
+                    h.sendResponseHeaders(200, 0);
+                    return;
+                }
                 data.put(key, value);
                 System.out.println("Значение для ключа " + key + " успешно обновлено!");
                 h.sendResponseHeaders(200, 0);

@@ -12,11 +12,8 @@ import tasks.*;
 public class HTTPTaskManager extends FileBackedTaskManager {
 
     private KVTaskClient taskClient;
-
     private final HttpTaskServer httpTaskServer;
-
-    Gson gson = new Gson();
-
+    private Gson gson;
     public HTTPTaskManager(String uri) {
         super(uri);
         httpTaskServer = new HttpTaskServer(this);
@@ -33,7 +30,7 @@ public class HTTPTaskManager extends FileBackedTaskManager {
     @Override
     public void load(String serverUri) {
         taskClient = new KVTaskClient(serverUri);
-        Gson gson1 = new Gson();
+        gson = new Gson();
 
         // получить данные с сервера
         String tasksJson = taskClient.load("tasks");
@@ -42,9 +39,9 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         String historyJson = taskClient.load("history");
 
         // обработать данные и загрузить в менеджер
-        loadTasksFromJson(tasksJson, TaskType.TASK, gson1);
-        loadTasksFromJson(epicsJson, TaskType.EPIC, gson1);
-        loadTasksFromJson(subtasksJson, TaskType.SUBTASK, gson1);
+        loadTasksFromJson(tasksJson, TaskType.TASK, gson);
+        loadTasksFromJson(epicsJson, TaskType.EPIC, gson);
+        loadTasksFromJson(subtasksJson, TaskType.SUBTASK, gson);
         loadHistoryFromJson(historyJson);
     }
 
@@ -69,7 +66,6 @@ public class HTTPTaskManager extends FileBackedTaskManager {
                 case EPIC:
                     Epic epic = gson1.fromJson(jsonObject, Epic.class);
                     epics.put(id, epic);
-                    prioritizedTasks.add(epic);
                     break;
                 case SUBTASK:
                     Subtask subtask = gson1.fromJson(jsonObject, Subtask.class);
@@ -85,9 +81,8 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         JsonArray jsonArray = JsonParser.parseString(data).getAsJsonArray();
 
         for (JsonElement jsonElement : jsonArray) {
-            if (!jsonElement.isJsonObject()) continue;
-            int id = jsonElement.getAsInt();
 
+            int id = jsonElement.getAsInt();
             if (tasks.containsKey(id)) {
                 getTask(id);
                 continue;
@@ -123,10 +118,30 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         }
     }
 
+    // сохранить состояние менеджера при удалении задач
+    private void saveOnDelete() {
+
+        if (tasks.isEmpty()) {
+            String response = "[{\"isNull\":true}]";
+            taskClient.put("tasks", response);
+        }
+        if (epics.isEmpty()) {
+            String response = "[{\"isNull\":true}]";
+            taskClient.put("epics", response);
+        }
+        if (subtasks.isEmpty()) {
+            String response = "[{\"isNull\":true}]";
+            taskClient.put("subtasks", response);
+        }
+        if (getHistory().isEmpty()) {
+            String response = "[{\"isNull\":true}]";
+            taskClient.put("history", response);
+        }
+    }
+
     // ---------------------------------------------
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
     // ---------------------------------------------
-
 
     // преобразовать список истории в элемент JSON со списком ID
     private String getHistoryJson() {
@@ -139,4 +154,63 @@ public class HTTPTaskManager extends FileBackedTaskManager {
         }
         return gson.toJson(historyIds);
     }
+
+    // ---------------------------------------------
+    // ПЕРЕОПРЕДЕЛЕННЫЕ МЕТОДЫ
+    // ---------------------------------------------
+
+    // УДАЛИТЬ
+
+    // удалить задачу
+    @Override
+    public void delete(Task task) {
+        super.delete(task);
+        save();
+        if (tasks.isEmpty()) saveOnDelete();
+    }
+
+    // удалить эпик
+    @Override
+    public void delete(Epic epic) {
+        super.delete(epic);
+        save();
+        if (subtasks.isEmpty()) saveOnDelete();
+        if (epics.isEmpty()) saveOnDelete();
+    }
+
+    // удалить подзадачу
+    @Override
+    public void delete(Subtask subtask) {
+        super.delete(subtask);
+        save();
+        if (subtasks.isEmpty()) saveOnDelete();
+        if (epics.isEmpty()) saveOnDelete();
+    }
+
+    // УДАЛИТЬ ВСЕ ЗАДАЧИ ОДНОГО ТИПА
+
+    // удалить все задачи
+    @Override
+    public void deleteAllTasks(){
+        super.deleteAllTasks();
+        save();
+        saveOnDelete();
+    }
+
+    // удалить все эпики
+    @Override
+    public void deleteAllEpics() {
+        super.deleteAllEpics();
+        save();
+        saveOnDelete();
+    }
+
+    // удалить все подзадачи
+    @Override
+    public void deleteAllSubtasks() {
+        super.deleteAllSubtasks();
+        save();
+        saveOnDelete();
+    }
+
 }

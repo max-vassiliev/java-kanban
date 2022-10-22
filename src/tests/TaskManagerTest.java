@@ -185,6 +185,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Task savedTask1 = taskManager.getTask(idTask1);
         savedTask1.setStatus(Status.DONE);
 
+        // обновляем также task1 для классов-наследников
+        task1.setId(idTask1);
+        task1.setStatus(Status.DONE);
+
         taskManager.update(savedTask1);
 
         final List<Task> tasks = taskManager.getTasks();
@@ -198,6 +202,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final int idEpic1 = taskManager.add(epic1);
         final Epic savedEpic1 = taskManager.getEpic(idEpic1);
         savedEpic1.setDescription("Epic1 Description2");
+
+        // обновляем также epic1 для классов-наследников
+        epic1.setId(idEpic1);
+        epic1.setDescription("Epic1 Description2");
 
         taskManager.update(savedEpic1);
 
@@ -218,6 +226,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         final Subtask savedSubtask1 = taskManager.getSubtask(idSubtask1);
         savedSubtask1.setStatus(Status.DONE);
+
+        // обновляем subtask1 для классов-наследников
+        subtask1.setId(idSubtask1);
+        subtask1.setStatus(Status.DONE);
 
         taskManager.update(savedSubtask1);
         final List<Subtask> subtasks = taskManager.getSubtasks();
@@ -281,6 +293,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final int idEpic1 = taskManager.add(epic1);
         final int idSubtask1 = taskManager.add(subtask1);
         final int idSubtask2 = taskManager.add(subtask2);
+
+        // для классов-наследников
+        epic1.setId(idEpic1);
 
         final Subtask savedSubtask1 = taskManager.getSubtask(idSubtask1);
         taskManager.getSubtask(idSubtask2);
@@ -798,14 +813,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final int idEpic1 = taskManager.add(epic1);
         List<Subtask> subtasks = taskManager.getSubtasksInEpic(idEpic1);
         assertNull(subtasks);
-//        List<Subtask> subtasks = taskManager.getSubtasksInEpic(idEpic1);
-//        assertEquals(0, subtasks.size());
-
-//        final NullPointerException exception = assertThrows(
-//                NullPointerException.class,
-//                () -> taskManager.getSubtasksInEpic(idEpic1));
-//
-//        assertEquals("Список подзадач пуст", exception.getMessage());
     }
 
     // УДАЛИТЬ
